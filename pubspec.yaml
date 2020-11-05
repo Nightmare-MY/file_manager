@@ -11,6 +11,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  custom_process:
+    path: ../plugins/custom_process
+
+  # 可拖拽的ListView
+  draggable_scrollbar: ^0.0.4
+  # 状态管理
+  provider: ^3.1.0
+  # Flutter 的一些动画
+  flutter_spinkit: "^4.1.2"
+  # 事件总线
+  event_bus: ^1.1.0
+  # svg图像
+  flutter_svg: ^0.17.4
 
 dev_dependencies:
   flutter_test:
