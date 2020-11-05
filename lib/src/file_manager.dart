@@ -98,12 +98,22 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
   AnimationController animationController;
   FileState fileState = FileState.fileDefault;
   AnimationController pastIconAnimaController;
+  // 是否有储存权限
+  bool hasPermission = false;
   bool pageIsInit = false;
   @override
   void initState() {
     super.initState();
     initAnimation();
     initFMPage();
+    temp();
+  }
+
+  void temp() {
+    ProcessResult result = Process.runSync('ls', ['/storage/emulated/0']);
+    // print(result.stdout);
+    print(result.stderr);
+    print('object');
   }
 
   //初始化动画
@@ -602,7 +612,7 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
                           // showToast2('已添加');
                         }
                         if (choose == 3) {
-                          SystemNavigator.pop();
+                          SystemNavigator.pop(animated: false);
                         }
                         // PlatformChannel.Drawer.invokeMethod<void>('Exit');
                       }

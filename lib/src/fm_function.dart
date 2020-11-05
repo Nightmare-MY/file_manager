@@ -13,7 +13,7 @@ Widget getWidgetFromExtension(FileEntity fileNode, BuildContext context,
   if (isFile) {
     if (fileNode.nodeName.endsWith('.zip'))
       return SvgPicture.asset(
-        'assets/icon/zip.svg',
+        'packages/file_manager/assets/icon/zip.svg',
         width: 20.0,
         height: 20.0,
         color: Theme.of(context).iconTheme.color,
@@ -33,13 +33,13 @@ Widget getWidgetFromExtension(FileEntity fileNode, BuildContext context,
       );
     } else
       return SvgPicture.asset(
-        'assets/icon/file.svg',
+        'packages/file_manager/assets/icon/file.svg',
         width: 20.0,
         height: 20.0,
       );
   } else {
     return SvgPicture.asset(
-      'assets/icon/directory.svg',
+      'packages/file_manager/assets/icon/directory.svg',
       width: 20.0,
       height: 20.0,
       color: Theme.of(context).iconTheme.color,

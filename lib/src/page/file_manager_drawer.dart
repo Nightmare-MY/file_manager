@@ -3,20 +3,20 @@ import 'package:custom_process/get_file_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'colors/file_colors.dart';
-import 'config/global.dart';
-import 'file_manager.dart';
-import 'utils/bookmarks.dart';
+import '../colors/file_colors.dart';
+import '../config/global.dart';
+import '../file_manager.dart';
+import '../utils/bookmarks.dart';
 
-class FMDrawer extends StatefulWidget {
-  const FMDrawer({Key key, this.width}) : super(key: key);
+class FileManagerDrawer extends StatefulWidget {
+  const FileManagerDrawer({Key key, this.width}) : super(key: key);
   final double width;
 
   @override
-  _FMDrawerState createState() => _FMDrawerState();
+  _FileManagerDrawerState createState() => _FileManagerDrawerState();
 }
 
-class _FMDrawerState extends State<FMDrawer> {
+class _FileManagerDrawerState extends State<FileManagerDrawer> {
   List<String> rootInfo = <String>[];
   List<String> sdcardInfo = <String>[];
   List<String> bookMarks = <String>[];
@@ -373,7 +373,7 @@ class _MarksItemState extends State<MarksItem>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SvgPicture.asset(
-                    'assets/icon/directory.svg',
+                    'packages/file_manager/assets/icon/directory.svg',
                     width: 20.0,
                     height: 20.0,
                     color: Theme.of(context).iconTheme.color,

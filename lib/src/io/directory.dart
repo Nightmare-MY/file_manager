@@ -59,6 +59,7 @@ class NiDirectory extends FileEntity {
             "$lsPath -aog '${PlatformUtil.getUnixPath(path)}'\n"))
         .split('\n')
           ..removeAt(0);
+    print(_fullmessage);
     String b = '';
     for (int i = 0; i < _fullmessage.length; i++) {
       if (_fullmessage[i].startsWith('l')) {
@@ -79,6 +80,7 @@ class NiDirectory extends FileEntity {
           (await NiProcess.exec("echo '$b'|xargs $lsPath -ALdog\n"))
               .replaceAll('//', '/')
               .split('\n');
+      print(linkFileNodes);
       final Map<String, String> map = <String, String>{};
       for (final String str in linkFileNodes) {
         // print(str);

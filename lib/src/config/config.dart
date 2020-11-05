@@ -4,9 +4,7 @@ class Config {
   Config._();
   static String baseURL =
       kReleaseMode ? 'https://api2.bmob.cn/1' : 'https://api2.bmob.cn/1';
-
   static String dbPath = '/data/data/com.nightmare/databases/user.db';
-
   static const String backupPath = 'YanTool/Backup';
   static String binPath = '/data/data/com.nightmare/files/usr/bin';
   static String filesPath = '/data/data/com.nightmare/files';
