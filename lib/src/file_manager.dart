@@ -225,7 +225,8 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
               if (PlatformUtil.isDesktop())
                 FileManagerDrawer(width: _drawerWidth),
               SizedBox(
-                width: MediaQuery.of(context).size.width - 300,
+                width: MediaQuery.of(context).size.width -
+                    (PlatformUtil.isMobilePhone() ? 0.0 : 300),
                 child: Stack(
                   children: <Widget>[
                     if (_paths.isEmpty)
