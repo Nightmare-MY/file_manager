@@ -17,19 +17,14 @@ Directory appDocDir;
 
 typedef PathCallback = Future<void> Function(String path);
 
-class EventBusOn {
-  EventBusOn(this.a);
-  final int a;
-}
-
 class FMPage extends StatefulWidget {
-  const FMPage(
-      {Key key,
-      this.initpath,
-      this.callback,
-      this.chooseFile = false,
-      this.pathCallBack})
-      : super(key: key);
+  const FMPage({
+    Key key,
+    this.initpath,
+    this.callback,
+    this.chooseFile = false,
+    this.pathCallBack,
+  }) : super(key: key);
   final String initpath; //打开文件管理器初始化的路径
   final bool chooseFile; //是用这个页面选择文件
   final void Function(String str) callback; //这个用来返回文件的路径
@@ -42,7 +37,6 @@ class FMPage extends StatefulWidget {
 class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
   String _currentdirectory = ''; //当前所在的文件夹
   List<FileEntity> _fileNodes = <FileEntity>[]; //保存所有文件的节点
-  // List<FileSystemEntity> _list1;
   final ScrollController _scrollController = ScrollController(); //列表滑动控制器
   AnimationController _animationController; //动画控制器，用来控制文件夹进入时的透明度
   Animation<double> _opacityTween; //透明度动画补间值
@@ -61,6 +55,27 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
   void didUpdateWidget(FMPage oldWidget) {
     WidgetsBinding.instance.addPostFrameCallback(_onAfterRendering);
     super.didUpdateWidget(oldWidget);
+  }
+
+  FiMaPageNotifier fiMaPageNotifier;
+  @override
+  Widget build(BuildContext context) {
+    fiMaPageNotifier = Provider.of<FiMaPageNotifier>(context, listen: false);
+    return Theme(
+      data: ThemeData(
+        fontFamily: Platform.isLinux ? 'SourceHanSansSC-Light' : null,
+        textTheme: Theme.of(context).textTheme.copyWith(
+              bodyText2: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  .copyWith(color: Colors.black),
+            ),
+        iconTheme: const IconThemeData(
+          color: Color(0xff213349),
+        ),
+      ),
+      child: buildWillPopScope(context),
+    );
   }
 
   void initAnimation() {
@@ -289,25 +304,6 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  FiMaPageNotifier fiMaPageNotifier;
-  @override
-  Widget build(BuildContext context) {
-    fiMaPageNotifier = Provider.of<FiMaPageNotifier>(context, listen: false);
-    return Theme(
-      data: ThemeData(
-        fontFamily: Platform.isLinux ? 'SourceHanSansSC-Light' : null,
-        textTheme: Theme.of(context).textTheme.copyWith(
-              bodyText2: Theme.of(context)
-                  .textTheme
-                  .bodyText2
-                  .copyWith(color: Colors.black),
-            ),
-        iconTheme: const IconThemeData(color: Color(0xff213349)),
-      ),
-      child: buildWillPopScope(context),
-    );
-  }
-
   WillPopScope buildWillPopScope(BuildContext context) {
     // print(MaterialState.hovered);
     // FlatButton(hoverColor: ,onPressed: null, child: null);
@@ -318,11 +314,6 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
           fontFamily: Platform.isLinux ? 'SourceHanSansSC-Light' : null,
         ),
         color: Colors.white,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(12.0),
-          ),
-        ),
         elevation: 8.0,
         child: FadeTransition(
           opacity: _opacityTween,
@@ -332,14 +323,9 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
                 _getFileNodes(_currentdirectory, afterSort: () async {});
             },
             displacement: 1,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(12.0),
-              ),
-              child: DraggableScrollbar.semicircle(
-                controller: _scrollController,
-                child: buildListView(),
-              ),
+            child: DraggableScrollbar.semicircle(
+              controller: _scrollController,
+              child: buildListView(),
             ),
           ),
         ),

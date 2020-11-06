@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:custom_process/platform_util.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'colors/file_colors.dart';
 import 'config/config.dart';
 import 'config/global.dart';
-import 'fm_drawer.dart';
+import 'page/file_manager_drawer.dart';
 import 'page/center_drawer.dart';
 import 'page/fm_page.dart';
 import 'page_choose.dart';
@@ -107,6 +108,7 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
     initAnimation();
     initFMPage();
     temp();
+    Global.initGlobal();
   }
 
   void temp() {
@@ -144,7 +146,7 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
 
   //软件将页面路径的列表以换行符分割保存进了储存
   Future<void> getHistoryPaths() async {
-    String temp;
+    String temp = '';
     try {
       temp = await File('${Config.filesPath}/FileManager/History_Path')
           .readAsString();
@@ -212,35 +214,44 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: FMDrawer(
-        width: _drawerWidth,
-      ),
+      drawer: PlatformUtil.isMobilePhone()
+          ? FileManagerDrawer(width: _drawerWidth)
+          : null,
       backgroundColor: Colors.white,
       body: Builder(
         builder: (BuildContext context) {
-          return Stack(
-            children: <Widget>[
-              if (_paths.isEmpty)
-                const SpinKitThreeBounce(
-                  color: FileColors.fileAppColor,
-                  size: 16.0,
-                )
-              else
-                buildStack(context),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  height: 20.0,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: _paths.length,
-                    itemBuilder: (BuildContext c, int i) {
-                      return Container(
-                        height: 20,
-                        color: Colors.transparent,
-                      );
-                    },
-                  ),
+          return Row(
+            children: [
+              if (PlatformUtil.isDesktop())
+                FileManagerDrawer(width: _drawerWidth),
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 300,
+                child: Stack(
+                  children: <Widget>[
+                    if (_paths.isEmpty)
+                      const SpinKitThreeBounce(
+                        color: FileColors.fileAppColor,
+                        size: 16.0,
+                      )
+                    else
+                      buildStack(context),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: SizedBox(
+                        height: 20.0,
+                        child: PageView.builder(
+                          controller: _pageController,
+                          itemCount: _paths.length,
+                          itemBuilder: (BuildContext c, int i) {
+                            return Container(
+                              height: 20,
+                              color: Colors.transparent,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -358,17 +369,15 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
                     child: Transform(
                       transform: matrix4,
                       alignment: Alignment.center,
-                      child: FileClipRRect(
-                        child: FMPage(
-                          // key: GlobalKey(),
-                          pathCallBack: (String path) async {
-                            _paths[index] = path;
-                            setState(() {});
-                            setStatePathFile();
-                          },
+                      child: FMPage(
+                        // key: GlobalKey(),
+                        pathCallBack: (String path) async {
+                          _paths[index] = path;
+                          setState(() {});
+                          setStatePathFile();
+                        },
 
-                          initpath: _paths[index],
-                        ),
+                        initpath: _paths[index],
                       ),
                     ),
                   );

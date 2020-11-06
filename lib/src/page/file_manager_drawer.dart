@@ -28,7 +28,7 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
   }
 
   Future<void> init() async {
-    final String result = await NiProcess.exec('df');
+    final String result = await NiProcess.exec('df -k');
     // File('/storage/emulated/0/YanTool/Flash/2.txt').writeAsStringSync(result);
     final List<String> infos = result.split('\n');
     for (final String line in infos) {
@@ -130,6 +130,14 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
                                         )
                                       else
                                         const SizedBox(),
+                                      LinearProgressIndicator(
+                                        backgroundColor: Colors.grey,
+                                        value: int.parse(rootInfo[2]) /
+                                            int.parse(rootInfo[1]),
+                                        valueColor: AlwaysStoppedAnimation(
+                                          Theme.of(context).accentColor,
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
