@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:custom_process/custom_process.dart';
-import 'package:custom_process/platform_util.dart';
+import 'package:global_repository/global_repository.dart';
 
 import 'file.dart';
 import 'file_entity.dart';
@@ -60,12 +59,14 @@ class NiDirectory extends FileEntity {
     List<String> _fullmessage = <String>[];
     path = path.replaceAll('//', '/');
     // print('刷新的路径=====>>$path');
+    print("$lsPath -aog '${PlatformUtil.getUnixPath(path)}'\n");
     final String lsOut = await NiProcess.exec(
       "$lsPath -aog '${PlatformUtil.getUnixPath(path)}'\n",
     );
+    print('lsOut===>$lsOut');
     // 删除第一行 -> total xxx
     _fullmessage = lsOut.split('\n')..removeAt(0);
-    // print(_fullmessage);
+    print(_fullmessage);
     // ------------------------------------------------------------------------
     // ------------------------- 不要动这段代码，阿弥陀佛。-------------------------
     // linkFileNode 是当前文件节点有符号链接的情况。
@@ -140,10 +141,18 @@ class NiDirectory extends FileEntity {
       //查找 -> ' ..' 这个所在的行数
       return element.endsWith(' ..');
     });
+    if (currentIndex == -1) {
+      _fileNodes.add(NiDirectory('..'));
+    }
+    print('currentIndex-->$currentIndex');
     // ls 命令输出有空格上的对齐，不能用 list.split 然后以多个空格分开的方式来解析数据
     // 因为有的文件(夹)存在空格
-    _startIndex = _fullmessage[currentIndex].indexOf('..'); //获取文件名开始的地址
-    // print('startIndex===>>>$_startIndex');
+    print(_fullmessage);
+    _startIndex = _fullmessage[0].indexOf(
+      RegExp(':[0-9][0-9] '),
+    ); //获取文件名开始的地址
+    _startIndex += 4;
+    print('startIndex===>>>$_startIndex');
     if (path == '/') {
       //如果当前路径已经是/就不需要再加一个/了
       for (int i = 0; i < _fullmessage.length; i++) {

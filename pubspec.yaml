@@ -11,9 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  custom_process:
-    path: ../plugins/custom_process
-
+  global_repository:
+    git: https://github.com/nightmare-space/global_repository
   # 可拖拽的ListView
   draggable_scrollbar: ^0.0.4
   # 状态管理

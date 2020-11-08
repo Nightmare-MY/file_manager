@@ -1,5 +1,4 @@
-import 'package:custom_process/custom_process.dart';
-import 'package:custom_process/get_file_size.dart';
+import 'package:global_repository/global_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 

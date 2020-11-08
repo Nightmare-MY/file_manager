@@ -50,13 +50,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.1"
-  custom_process:
-    dependency: "direct main"
-    description:
-      path: "../plugins/custom_process"
-      relative: true
-    source: path
-    version: "0.0.1"
   draggable_scrollbar:
     dependency: "direct main"
     description:
@@ -116,6 +109,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  global_repository:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "9a0a1225c6bb2d209daf449fc45e44d5cb30d555"
+      url: "https://github.com/nightmare-space/global_repository"
+    source: git
+    version: "0.0.1"
   intl:
     dependency: transitive
     description:

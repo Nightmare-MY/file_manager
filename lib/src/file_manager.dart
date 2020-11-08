@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:custom_process/platform_util.dart';
+import 'package:global_repository/global_repository.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -112,10 +112,10 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
   }
 
   void temp() {
-    ProcessResult result = Process.runSync('ls', ['/storage/emulated/0']);
+    // ProcessResult result = Process.runSync('ls', ['/storage/emulated/0/DCIM']);
     // print(result.stdout);
-    print(result.stderr);
-    print('object');
+    // print(result.stderr);
+    // print('object');
   }
 
   //初始化动画

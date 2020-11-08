@@ -1,4 +1,4 @@
-import 'package:custom_process/custom_process.dart';
+import 'package:global_repository/global_repository.dart';
 import 'package:flutter/material.dart';
 
 import '../file_manager.dart';

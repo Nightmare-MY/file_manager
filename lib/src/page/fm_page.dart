@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:custom_process/get_file_size.dart';
+import 'package:global_repository/global_repository.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:file_manager/src/config/global.dart';
 import 'package:file_manager/src/io/directory.dart';
