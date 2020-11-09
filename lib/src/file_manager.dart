@@ -99,10 +99,13 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
   int currentPage = 0; //当前页面
   AnimationController animationController;
   FileState fileState = FileState.fileDefault;
+  // 多个页面在缩放时用到的四阶矩阵
+  Matrix4 matrix4;
   AnimationController pastIconAnimaController;
   // 是否有储存权限
   bool hasPermission = false;
   bool pageIsInit = false;
+
   @override
   void initState() {
     super.initState();
@@ -126,12 +129,12 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
 
   void _onAfterRendering(Duration timeStamp) {
     //页面构建完成后悔拿到context
-
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    NiToast.initContext(context);
     return Scaffold(
       drawer: PlatformUtil.isMobilePhone() ? const FileManagerDrawer() : null,
       backgroundColor: Colors.white,
@@ -152,6 +155,7 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
                       )
                     else
                       buildStack(context),
+                    // 最下面的透明的 widget
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: SizedBox(
@@ -251,15 +255,11 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
     );
   }
 
-  Matrix4 matrix4;
   Stack buildStack(BuildContext context) {
     return Stack(
       alignment: Alignment.topCenter,
       children: <Widget>[
-        Align(
-          alignment: FractionalOffset.center,
-          child: buildAppBar(context),
-        ),
+        buildAppBar(context),
         Padding(
           padding: EdgeInsets.only(
             top: MediaQueryData.fromWindow(window).padding.top + kToolbarHeight,
@@ -286,15 +286,19 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
                     child: Transform(
                       transform: matrix4,
                       alignment: Alignment.center,
-                      child: FMPage(
-                        // key: GlobalKey(),
-                        pathCallBack: (String path) async {
-                          _paths[index] = path;
-                          setState(() {});
-                          setStatePathFile();
-                        },
-
-                        initpath: _paths[index],
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                        ),
+                        child: FMPage(
+                          pathCallBack: (String path) async {
+                            _paths[index] = path;
+                            setState(() {});
+                            setStatePathFile();
+                          },
+                          initpath: _paths[index],
+                        ),
                       ),
                     ),
                   );
@@ -315,12 +319,20 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
     // print('object');
   }
 
-  //初始化动画
   void initAnimation() {
+    //初始化动画
     pastIconAnimaController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 300));
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 300,
+      ),
+    );
     animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 600));
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 600,
+      ),
+    );
   }
 
   Future<void> initFMPage() async {
@@ -332,9 +344,11 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
       _pageController.addListener(() {
         _commonController.jumpTo(_pageController.offset);
         currentPage = _pageController.page.toInt();
-        _titlePageController.animateToPage(_pageController.page.round(),
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.linear); //title的文件夹路径动画
+        _titlePageController.animateToPage(
+          _pageController.page.round(),
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.linear,
+        ); //title的文件夹路径动画
         setState(() {});
       });
     }
@@ -344,6 +358,7 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
   }
 
   Future<void> createWorkDir() async {
+    // 创建 FileManager 文件夹
     final Directory workDir = Directory('${Config.filesPath}/FileManager');
     if (!workDir.existsSync()) {
       await workDir.create(recursive: true);
@@ -391,8 +406,11 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
   }
 
   void changePage(int index) {
-    _pageController.animateToPage(index,
-        duration: const Duration(milliseconds: 800), curve: Curves.ease);
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.ease,
+    );
   }
 
   void setStatePathFile() {
@@ -401,7 +419,6 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
     //       .writeAsString(_paths.join('\n'));
   }
 
-  int popPage = 0;
   PreferredSize buildAppBar(BuildContext context) {
     final FiMaPageNotifier fiMaPageNotifier =
         Provider.of<FiMaPageNotifier>(context);
@@ -419,10 +436,11 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
         titleSpacing: 0,
         title: InkWell(
           onTap: () async {
-            await Clipboard.setData(
-                ClipboardData(text: _paths[_titlePageController.page.toInt()]));
-            Feedback.forTap(context);
-            // PlatformChannel.Toast.invokeMethod<void>('已复制当前路径');
+            await Clipboard.setData(ClipboardData(
+              text: _paths[_titlePageController.page.toInt()],
+            ));
+            Feedback.forLongPress(context);
+            NiToast.showToast('已复制路径');
           },
           child: SizedBox(
             height: 24.0,
@@ -530,7 +548,6 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
               child: InkWell(
                 borderRadius: BorderRadius.circular(8.0),
                 onTap: () {
-                  popPage = currentPage;
                   showDialog<void>(
                     useRootNavigator: false,
                     context: context,
@@ -627,8 +644,10 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
                         );
                         if (choose == 0) {
                           print(PlatformUtil.packageName);
-                          // BookMarks.addMarks(
-                          //     _paths[_titlePageController.page.toInt()]);
+                          BookMarks.addMarks(
+                            _paths[_titlePageController.page.toInt()],
+                          );
+                          NiToast.showToast('已添加');
                           // showToast2('已添加');
                         }
                         if (choose == 3) {

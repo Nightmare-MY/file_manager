@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:global_repository/global_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -6,8 +9,9 @@ import '../file_manager.dart';
 import '../utils/bookmarks.dart';
 
 class FileManagerDrawer extends StatefulWidget {
-  const FileManagerDrawer({Key key, this.width}) : super(key: key);
-  final double width;
+  const FileManagerDrawer({
+    Key key,
+  }) : super(key: key);
 
   @override
   _FileManagerDrawerState createState() => _FileManagerDrawerState();
@@ -26,10 +30,10 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
 
   Future<void> init() async {
     final String result = await NiProcess.exec('df -k');
-    // File('/storage/emulated/0/YanTool/Flash/2.txt').writeAsStringSync(result);
+    File('/storage/emulated/0/YanTool/123/2.txt').writeAsStringSync(result);
     final List<String> infos = result.split('\n');
     for (final String line in infos) {
-      if (line.endsWith('/')) {
+      if (line.endsWith('/data')) {
         rootInfo = line.split(RegExp(r'\s{1,}'));
         setState(() {});
       }
@@ -49,8 +53,20 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    if (rootInfo.isEmpty | sdcardInfo.isEmpty) {
+      return const SpinKitThreeBounce(
+        color: FileColors.fileAppColor,
+        size: 16.0,
+      );
+    }
+    double width;
+    if (PlatformUtil.isDesktop()) {
+      width = 300;
+    } else {
+      width = MediaQuery.of(context).size.width * 3 / 4;
+    }
     return SizedBox(
-      width: widget.width,
+      width: width,
       child: Material(
         color: Colors.transparent,
         shape: const RoundedRectangleBorder(
@@ -86,7 +102,7 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
                             style: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.w500,
-                              fontSize: 16.0,
+                              fontSize: 14.0,
                             ),
                           ),
                         ),
@@ -102,7 +118,9 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 12.0),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -154,7 +172,9 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 12.0),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -192,7 +212,7 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
                             '书签',
                             style: TextStyle(
                               color: Colors.grey,
-                              fontSize: 16.0,
+                              fontSize: 14.0,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -202,7 +222,7 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
                         ),
                         if (bookMarks.isNotEmpty)
                           SizedBox(
-                            height: bookMarks.length * 40.0,
+                            height: bookMarks.length * 48.0,
                             child: ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               padding: const EdgeInsets.all(0.0),
@@ -245,9 +265,7 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
                                 );
                               },
                             ),
-                          )
-                        else
-                          const SizedBox()
+                          ),
                       ],
                     ),
                   ))
@@ -372,23 +390,25 @@ class _MarksItemState extends State<MarksItem>
           Transform(
             transform: Matrix4.identity()..translate(dx),
             child: SizedBox(
-              height: 40.0,
-              width: MediaQuery.of(context).size.width * 3 / 4,
+              height: 48.0,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SvgPicture.asset(
                     'packages/file_manager/assets/icon/directory.svg',
-                    width: 20.0,
-                    height: 20.0,
+                    width: 30.0,
+                    height: 30.0,
                     color: Theme.of(context).iconTheme.color,
+                  ),
+                  const SizedBox(
+                    width: 8,
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(widget.marksPath.split('/').last),
+                      Text(PlatformUtil.getFileName(widget.marksPath)),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width * 3 / 4 - 24,
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Text(

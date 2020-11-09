@@ -7,7 +7,6 @@ import 'package:file_manager/src/io/file.dart';
 import 'package:file_manager/src/io/file_entity.dart';
 import 'package:file_manager/src/provider/file_manager_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../file_manager.dart';
 import '../fm_function.dart';
 import 'text_edit.dart';
@@ -39,8 +38,8 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController(); //列表滑动控制器
   AnimationController _animationController; //动画控制器，用来控制文件夹进入时的透明度
   Animation<double> _opacityTween; //透明度动画补间值
-  final Map<String, double> _historyOffset = <String, double>{}; //记录每一次的浏览位置
-
+  final Map<String, double> _historyOffset =
+      <String, double>{}; //记录每一次的浏览位置，key 是路径，value是offset
   bool listIsBuilding = false;
 
   @override
@@ -60,15 +59,8 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(
-        fontFamily: Platform.isLinux ? 'SourceHanSansSC-Light' : null,
-        textTheme: Theme.of(context).textTheme.copyWith(
-              bodyText2: Theme.of(context)
-                  .textTheme
-                  .bodyText2
-                  .copyWith(color: Colors.black),
-            ),
-        iconTheme: const IconThemeData(
-          color: Color(0xff213349),
+        iconTheme: IconThemeData(
+          color: Theme.of(context).accentColor,
         ),
       ),
       child: buildWillPopScope(context),
@@ -76,11 +68,17 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
   }
 
   void initAnimation() {
-    //初始化动画
+    //初始化动画，这是切换文件路径时的透明度动画
     _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 200));
-    final Animation<double> curve =
-        CurvedAnimation(parent: _animationController, curve: Curves.ease);
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 200,
+      ),
+    );
+    final Animation<double> curve = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.ease,
+    );
     _opacityTween = Tween<double>(begin: 0.0, end: 1.0)
         .animate(curve); //初始化这个动画的值始终为一，那么第一次打开就不会有透明度的变化
     _opacityTween.addListener(() {
