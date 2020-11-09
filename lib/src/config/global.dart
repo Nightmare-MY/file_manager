@@ -37,10 +37,10 @@ class Global {
     return _instance;
   }
 
-  static Future<void> initGlobal() async {
-    instance._documentsDir ??=
-        await PlatformUtil.workDirectory('com.nightmare.filemanager');
-  }
+  static Future<void> initGlobal() async {}
 
-  static String get documentsDir => instance._documentsDir;
+  static Future<String> get documentsDir => () async {
+        instance._documentsDir ??= await PlatformUtil.workDirectory();
+        return instance._documentsDir;
+      }();
 }

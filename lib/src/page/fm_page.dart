@@ -57,10 +57,8 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
     super.didUpdateWidget(oldWidget);
   }
 
-  FiMaPageNotifier fiMaPageNotifier;
   @override
   Widget build(BuildContext context) {
-    fiMaPageNotifier = Provider.of<FiMaPageNotifier>(context, listen: false);
     return Theme(
       data: ThemeData(
         fontFamily: Platform.isLinux ? 'SourceHanSansSC-Light' : null,
@@ -123,7 +121,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
         _getFileNodes(_currentdirectory);
       }
     });
-    _currentdirectory = widget.initpath ?? Global.documentsDir;
+    _currentdirectory = widget.initpath ?? await Global.documentsDir;
     _getFileNodes(_currentdirectory);
   }
 
@@ -148,7 +146,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
   void itemOnTap(FileEntity fileNode) {
     if (fileNode.nodeName == '..') {
       //清除所有已选择
-      fiMaPageNotifier.removeAllCheck();
+      // fiMaPageNotifier.removeAllCheck();
       //如果点了两个点的默认始终返上级目录
       final String backpath = Directory(_currentdirectory).parent.path; //
       _currentdirectory = backpath;
@@ -274,7 +272,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
   }
 
   Future<bool> onWillPop() async {
-    fiMaPageNotifier.removeAllCheck();
+    // fiMaPageNotifier.removeAllCheck();
     //触发
     if (widget.chooseFile) {
       return true;
@@ -462,7 +460,6 @@ class _FileItemState extends State<FileItem>
   FiMaPageNotifier fiMaPageNotifier;
   @override
   Widget build(BuildContext context) {
-    fiMaPageNotifier = Provider.of<FiMaPageNotifier>(context, listen: false);
     // print(fiMaPageNotifier.checkNodes);
     final List<String> _tmp = widget.fileNode.path.split(' -> '); //有的有符号链接
     final String currentFile = _tmp.first.split('/').last.toString(); //取前面那个就没错
@@ -476,25 +473,25 @@ class _FileItemState extends State<FileItem>
       height: 54,
       child: Stack(
         children: <Widget>[
-          if (fiMaPageNotifier.checkNodes.contains(widget.fileNode))
-            Container(
-              color: Colors.grey.withOpacity(0.6),
-            ),
+          // if (fiMaPageNotifier.checkNodes.contains(widget.fileNode))
+          //   Container(
+          //     color: Colors.grey.withOpacity(0.6),
+          //   ),
           InkWell(
             splashColor: Colors.transparent,
             onLongPress: () => widget.onLongPress(),
             onTap: () {
-              if (fiMaPageNotifier.checkNodes.isEmpty ||
-                  widget.fileNode.nodeName == '..') {
-                widget.onTap();
-              } else {
-                if (fiMaPageNotifier.checkNodes.contains(widget.fileNode)) {
-                  fiMaPageNotifier.removeCheck(widget.fileNode);
-                } else {
-                  fiMaPageNotifier.addCheck(widget.fileNode);
-                }
-                setState(() {});
-              }
+              // if (fiMaPageNotifier.checkNodes.isEmpty ||
+              //     widget.fileNode.nodeName == '..') {
+              widget.onTap();
+              // } else {
+              //   if (fiMaPageNotifier.checkNodes.contains(widget.fileNode)) {
+              //     fiMaPageNotifier.removeCheck(widget.fileNode);
+              //   } else {
+              //     fiMaPageNotifier.addCheck(widget.fileNode);
+              //   }
+              //   setState(() {});
+              // }
             },
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,

@@ -66,7 +66,6 @@ class NiDirectory extends FileEntity {
     print('lsOut===>$lsOut');
     // 删除第一行 -> total xxx
     _fullmessage = lsOut.split('\n')..removeAt(0);
-    print(_fullmessage);
     // ------------------------------------------------------------------------
     // ------------------------- 不要动这段代码，阿弥陀佛。-------------------------
     // linkFileNode 是当前文件节点有符号链接的情况。
@@ -111,7 +110,7 @@ class NiDirectory extends FileEntity {
         map[key] = str.substring(0, 1);
       }
       if (verbose) {
-        print('====>$map');
+        // print('====>$map');
       }
       for (int i = 0; i < _fullmessage.length; i++) {
         final String linkFromFile = _fullmessage[i].split(' -> ').last;
@@ -147,7 +146,6 @@ class NiDirectory extends FileEntity {
     print('currentIndex-->$currentIndex');
     // ls 命令输出有空格上的对齐，不能用 list.split 然后以多个空格分开的方式来解析数据
     // 因为有的文件(夹)存在空格
-    print(_fullmessage);
     _startIndex = _fullmessage[0].indexOf(
       RegExp(':[0-9][0-9] '),
     ); //获取文件名开始的地址

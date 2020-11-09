@@ -1,6 +1,7 @@
 import 'package:file_manager/file_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,7 +35,35 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: FileManager(),
+      home: Temp(),
+    );
+  }
+}
+
+class Temp extends StatefulWidget {
+  @override
+  _TempState createState() => _TempState();
+}
+
+class _TempState extends State<Temp> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          SizedBox(
+            height: 100,
+          ),
+          FlatButton(
+            onPressed: () async {
+              print(await getExternalStorageDirectories());
+              String path = await FileManager.chooseFile(context: context);
+              print(path);
+            },
+            child: Text('data'),
+          ),
+        ],
+      ),
     );
   }
 }

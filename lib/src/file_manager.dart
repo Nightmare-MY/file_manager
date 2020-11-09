@@ -1,29 +1,31 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:global_repository/global_repository.dart';
+
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:global_repository/global_repository.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'colors/file_colors.dart';
 import 'config/config.dart';
 import 'config/global.dart';
-import 'page/file_manager_drawer.dart';
 import 'page/center_drawer.dart';
+import 'page/file_manager_drawer.dart';
 import 'page/fm_page.dart';
 import 'page_choose.dart';
 import 'provider/file_manager_notifier.dart';
 import 'utils/bookmarks.dart';
 import 'utils/creat_work_dir.dart';
-import 'widgets/file_cliprrect.dart';
 
 Directory appDocDir;
 
 class FileManager extends StatelessWidget {
+  // static initFileManager
   static Future<String> chooseFile({@required BuildContext context}) async {
+    final String documentDir = await Global.documentsDir;
     return await Navigator.of(context).push(MaterialPageRoute(builder: (_) {
       // SafeArea;
       return Scaffold(
@@ -33,7 +35,7 @@ class FileManager extends StatelessWidget {
         ),
         body: FMPage(
           chooseFile: true,
-          initpath: '${Global.documentsDir}/YanTool/Rom',
+          initpath: '$documentDir/YanTool/Rom',
           callback: (String str) {
             // Navigator.of(globalContext).pop(str);
           },
@@ -147,14 +149,20 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
   //软件将页面路径的列表以换行符分割保存进了储存
   Future<void> getHistoryPaths() async {
     String temp = '';
-    try {
-      temp = await File('${Config.filesPath}/FileManager/History_Path')
-          .readAsString();
-    } catch (e) {
+    final bool exist = await File(
+      '${Config.filesPath}/FileManager/History_Path',
+    ).exists();
+    print('exist->$exist');
+    if (exist) {
+      try {
+        temp = await File('${Config.filesPath}/FileManager/History_Path')
+            .readAsString();
+      } catch (e) {}
+    } else {
       if (Platform.isAndroid)
         temp = '/storage/emulated/0';
       else {
-        temp = Global.documentsDir;
+        temp = await Global.documentsDir;
       }
     }
     _paths = temp.trim().split('\n');
@@ -183,9 +191,9 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
   }
 
   void setStatePathFile() {
-    if (Platform.isAndroid)
-      File('${Config.filesPath}/FileManager/History_Path')
-          .writeAsString(_paths.join('\n'));
+    // if (Platform.isAndroid)
+    //   File('${Config.filesPath}/FileManager/History_Path')
+    //       .writeAsString(_paths.join('\n'));
   }
 
   @override
@@ -540,7 +548,7 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
                           deletePageCall: deletePage,
                           addNewPageCall: () async {
                             Navigator.of(context).pop();
-                            addNewPage(Global.documentsDir);
+                            addNewPage(await Global.documentsDir);
                           },
                         ),
                       );
