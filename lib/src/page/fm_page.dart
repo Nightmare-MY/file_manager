@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:global_repository/global_repository.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
-import 'package:file_manager/src/config/global.dart';
 import 'package:file_manager/src/io/directory.dart';
 import 'package:file_manager/src/io/file.dart';
 import 'package:file_manager/src/io/file_entity.dart';
@@ -121,7 +120,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
         _getFileNodes(_currentdirectory);
       }
     });
-    _currentdirectory = widget.initpath ?? await Global.documentsDir;
+    _currentdirectory = widget.initpath ?? await PlatformUtil.documentsDir;
     _getFileNodes(_currentdirectory);
   }
 

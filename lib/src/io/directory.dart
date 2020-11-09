@@ -39,7 +39,7 @@ class NiDirectory extends FileEntity {
   }
 
   Future<List<FileEntity>> listAndSort({
-    bool verbose = true,
+    bool verbose = false,
   }) async {
     // if (Platform.isWindows) {
     //   return await listAndSortForWin();
@@ -59,11 +59,12 @@ class NiDirectory extends FileEntity {
     List<String> _fullmessage = <String>[];
     path = path.replaceAll('//', '/');
     // print('刷新的路径=====>>$path');
-    print("$lsPath -aog '${PlatformUtil.getUnixPath(path)}'\n");
     final String lsOut = await NiProcess.exec(
       "$lsPath -aog '${PlatformUtil.getUnixPath(path)}'\n",
     );
-    print('lsOut===>$lsOut');
+    if (verbose) {
+      print('lsOut===>$lsOut');
+    }
     // 删除第一行 -> total xxx
     _fullmessage = lsOut.split('\n')..removeAt(0);
     // ------------------------------------------------------------------------
@@ -143,14 +144,18 @@ class NiDirectory extends FileEntity {
     if (currentIndex == -1) {
       _fileNodes.add(NiDirectory('..'));
     }
-    print('currentIndex-->$currentIndex');
+    if (verbose) {
+      print('currentIndex-->$currentIndex');
+    }
     // ls 命令输出有空格上的对齐，不能用 list.split 然后以多个空格分开的方式来解析数据
     // 因为有的文件(夹)存在空格
     _startIndex = _fullmessage[0].indexOf(
       RegExp(':[0-9][0-9] '),
     ); //获取文件名开始的地址
     _startIndex += 4;
-    print('startIndex===>>>$_startIndex');
+    if (verbose) {
+      print('startIndex===>>>$_startIndex');
+    }
     if (path == '/') {
       //如果当前路径已经是/就不需要再加一个/了
       for (int i = 0; i < _fullmessage.length; i++) {

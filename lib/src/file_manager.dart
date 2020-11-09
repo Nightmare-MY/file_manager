@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:ui';
-
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,40 +7,41 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:global_repository/global_repository.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-
 import 'colors/file_colors.dart';
 import 'config/config.dart';
-import 'config/global.dart';
 import 'page/center_drawer.dart';
 import 'page/file_manager_drawer.dart';
 import 'page/fm_page.dart';
 import 'page_choose.dart';
 import 'provider/file_manager_notifier.dart';
 import 'utils/bookmarks.dart';
-import 'utils/creat_work_dir.dart';
 
 Directory appDocDir;
 
 class FileManager extends StatelessWidget {
   // static initFileManager
   static Future<String> chooseFile({@required BuildContext context}) async {
-    final String documentDir = await Global.documentsDir;
-    return await Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-      // SafeArea;
-      return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('选择文件'),
-        ),
-        body: FMPage(
-          chooseFile: true,
-          initpath: '$documentDir/YanTool/Rom',
-          callback: (String str) {
-            // Navigator.of(globalContext).pop(str);
-          },
-        ),
-      );
-    }));
+    final String documentDir = await PlatformUtil.documentsDir;
+    return await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) {
+          // SafeArea;
+          return Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: const Text('选择文件'),
+            ),
+            body: FMPage(
+              chooseFile: true,
+              initpath: '$documentDir/YanTool/Rom',
+              callback: (String str) {
+                // Navigator.of(globalContext).pop(str);
+              },
+            ),
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -52,10 +52,8 @@ class FileManager extends StatelessWidget {
           create: (_) => FiMaPageNotifier(),
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: '文件管理器',
-        theme: ThemeData(
+      child: Theme(
+        data: ThemeData(
           textTheme: const TextTheme(
             bodyText2: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w500),
           ),
@@ -68,7 +66,7 @@ class FileManager extends StatelessWidget {
           // textSelectionColor: Colors.red,
           // textSelectionHandleColor: Colors.red,
         ),
-        home: const FiMaHome(),
+        child: const FiMaHome(),
       ),
     );
   }
@@ -91,12 +89,13 @@ EventBus eventBus = EventBus();
 
 class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
   List<String> _paths = <String>[];
-  double _drawerWidth = 0.0;
   final PageController _pageController = PageController(); //最下面接收手势的Widget
-  final PageController _commonController =
-      PageController(initialPage: 0); //主页面切换的页面切换控制器
-  final PageController _titlePageController =
-      PageController(initialPage: 0); //头部是一个可以滑动的PageView
+  final PageController _commonController = PageController(
+    initialPage: 0,
+  ); //主页面切换的页面切换控制器
+  final PageController _titlePageController = PageController(
+    initialPage: 0,
+  ); //头部是一个可以滑动的PageView
   int currentPage = 0; //当前页面
   AnimationController animationController;
   FileState fileState = FileState.fileDefault;
@@ -110,90 +109,6 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
     initAnimation();
     initFMPage();
     temp();
-    Global.initGlobal();
-  }
-
-  void temp() {
-    // ProcessResult result = Process.runSync('ls', ['/storage/emulated/0/DCIM']);
-    // print(result.stdout);
-    // print(result.stderr);
-    // print('object');
-  }
-
-  //初始化动画
-  void initAnimation() {
-    pastIconAnimaController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 300));
-    animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 600));
-  }
-
-  Future<void> initFMPage() async {
-    await creatWorkDirectory();
-    if (Platform.isAndroid)
-      appDocDir = await getApplicationDocumentsDirectory();
-    _pageController.addListener(() {
-      // _scrollController.jumpTo(_pageController.offset);
-      _commonController.jumpTo(_pageController.offset);
-      // print(_pageController.offset);
-      currentPage = _pageController.page.toInt();
-      _titlePageController.animateToPage(_pageController.page.round(),
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.linear); //title的文件夹路径动画
-      setState(() {});
-    });
-    getHistoryPaths();
-    // print(appDocDir);
-  }
-
-  //软件将页面路径的列表以换行符分割保存进了储存
-  Future<void> getHistoryPaths() async {
-    String temp = '';
-    final bool exist = await File(
-      '${Config.filesPath}/FileManager/History_Path',
-    ).exists();
-    print('exist->$exist');
-    if (exist) {
-      try {
-        temp = await File('${Config.filesPath}/FileManager/History_Path')
-            .readAsString();
-      } catch (e) {}
-    } else {
-      if (Platform.isAndroid)
-        temp = '/storage/emulated/0';
-      else {
-        temp = await Global.documentsDir;
-      }
-    }
-    _paths = temp.trim().split('\n');
-    await Future<void>.delayed(const Duration(milliseconds: 400));
-    pageIsInit = true; //这个值为真才会启动左右滑动的效果
-    setState(() {});
-  }
-
-  void addNewPage(String path) {
-    //添加一个页面
-    _paths.add(path);
-    setState(() {});
-    setStatePathFile();
-    changePage(_paths.length - 1);
-  }
-
-  Future<void> deletePage(int index) async {
-    // _paths.removeAt(index);
-    setState(() {});
-    setStatePathFile();
-  }
-
-  void changePage(int index) {
-    _pageController.animateToPage(index,
-        duration: const Duration(milliseconds: 800), curve: Curves.ease);
-  }
-
-  void setStatePathFile() {
-    // if (Platform.isAndroid)
-    //   File('${Config.filesPath}/FileManager/History_Path')
-    //       .writeAsString(_paths.join('\n'));
   }
 
   @override
@@ -211,27 +126,20 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
 
   void _onAfterRendering(Duration timeStamp) {
     //页面构建完成后悔拿到context
-    if (Platform.isAndroid) {
-      _drawerWidth = MediaQuery.of(context).size.width * 3 / 4;
-    } else {
-      _drawerWidth = 300.0;
-    }
+
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: PlatformUtil.isMobilePhone()
-          ? FileManagerDrawer(width: _drawerWidth)
-          : null,
+      drawer: PlatformUtil.isMobilePhone() ? const FileManagerDrawer() : null,
       backgroundColor: Colors.white,
       body: Builder(
         builder: (BuildContext context) {
           return Row(
             children: [
-              if (PlatformUtil.isDesktop())
-                FileManagerDrawer(width: _drawerWidth),
+              if (PlatformUtil.isDesktop()) const FileManagerDrawer(),
               SizedBox(
                 width: MediaQuery.of(context).size.width -
                     (PlatformUtil.isMobilePhone() ? 0.0 : 300),
@@ -354,8 +262,8 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
         ),
         Padding(
           padding: EdgeInsets.only(
-              top: MediaQueryData.fromWindow(window).padding.top +
-                  kToolbarHeight),
+            top: MediaQueryData.fromWindow(window).padding.top + kToolbarHeight,
+          ),
           child: Center(
             child: SizedBox(
               height: MediaQuery.of(context).size.height,
@@ -398,6 +306,99 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
         CenterDrawer(),
       ],
     );
+  }
+
+  void temp() {
+    // ProcessResult result = Process.runSync('ls', ['/storage/emulated/0/DCIM']);
+    // print(result.stdout);
+    // print(result.stderr);
+    // print('object');
+  }
+
+  //初始化动画
+  void initAnimation() {
+    pastIconAnimaController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 300));
+    animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 600));
+  }
+
+  Future<void> initFMPage() async {
+    // 先初始化配置文件，因为要用很多平台路径
+    await Config.initConfig();
+    if (Platform.isAndroid) {
+      // 头部的pageview跟随
+      // 滑动底栏即可滑动主页
+      _pageController.addListener(() {
+        _commonController.jumpTo(_pageController.offset);
+        currentPage = _pageController.page.toInt();
+        _titlePageController.animateToPage(_pageController.page.round(),
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.linear); //title的文件夹路径动画
+        setState(() {});
+      });
+    }
+    await createWorkDir();
+    getHistoryPaths();
+    // print(appDocDir);
+  }
+
+  Future<void> createWorkDir() async {
+    final Directory workDir = Directory('${Config.filesPath}/FileManager');
+    if (!workDir.existsSync()) {
+      await workDir.create(recursive: true);
+    }
+  }
+
+  //软件将页面路径的列表以换行符分割保存进了储存
+  Future<void> getHistoryPaths() async {
+    String temp = '';
+    final File historyFile = File(
+      '${Config.filesPath}/FileManager/History_Path',
+    );
+    if (historyFile.existsSync()) {
+      try {
+        temp = await historyFile.readAsString();
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      if (Platform.isAndroid)
+        temp = '/storage/emulated/0';
+      else {
+        temp = await PlatformUtil.documentsDir;
+      }
+    }
+    _paths = temp.trim().split('\n');
+    await Future<void>.delayed(const Duration(milliseconds: 400));
+    pageIsInit = true; //这个值为真才会启动左右滑动的效果
+    setState(() {});
+  }
+
+  void addNewPage(String path) {
+    //添加一个页面
+    _paths.add(path);
+    setState(() {});
+    setStatePathFile();
+    changePage(_paths.length - 1);
+  }
+
+  Future<void> deletePage(int index) async {
+    // 删除一个页面
+    // _paths.removeAt(index);
+    setState(() {});
+    setStatePathFile();
+  }
+
+  void changePage(int index) {
+    _pageController.animateToPage(index,
+        duration: const Duration(milliseconds: 800), curve: Curves.ease);
+  }
+
+  void setStatePathFile() {
+    // if (Platform.isAndroid)
+    //   File('${Config.filesPath}/FileManager/History_Path')
+    //       .writeAsString(_paths.join('\n'));
   }
 
   int popPage = 0;
@@ -548,7 +549,7 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
                           deletePageCall: deletePage,
                           addNewPageCall: () async {
                             Navigator.of(context).pop();
-                            addNewPage(await Global.documentsDir);
+                            addNewPage(await PlatformUtil.documentsDir);
                           },
                         ),
                       );
@@ -625,8 +626,9 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
                           position: position,
                         );
                         if (choose == 0) {
-                          BookMarks.addMarks(
-                              _paths[_titlePageController.page.toInt()]);
+                          print(PlatformUtil.packageName);
+                          // BookMarks.addMarks(
+                          //     _paths[_titlePageController.page.toInt()]);
                           // showToast2('已添加');
                         }
                         if (choose == 3) {

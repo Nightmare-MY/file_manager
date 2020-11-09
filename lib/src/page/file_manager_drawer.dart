@@ -1,9 +1,7 @@
 import 'package:global_repository/global_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import '../colors/file_colors.dart';
-import '../config/global.dart';
 import '../file_manager.dart';
 import '../utils/bookmarks.dart';
 
@@ -145,8 +143,8 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
                           ),
                         ),
                         InkWell(
-                          onTap: () {
-                            eventBus.fire(Global.documentsDir);
+                          onTap: () async {
+                            eventBus.fire(await PlatformUtil.documentsDir);
                             Navigator.pop(context);
                           },
                           child: SizedBox(

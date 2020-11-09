@@ -35,35 +35,35 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Temp(),
+      home: FileManager(),
     );
   }
 }
 
-class Temp extends StatefulWidget {
-  @override
-  _TempState createState() => _TempState();
-}
+// class Temp extends StatefulWidget {
+//   @override
+//   _TempState createState() => _TempState();
+// }
 
-class _TempState extends State<Temp> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(
-            height: 100,
-          ),
-          FlatButton(
-            onPressed: () async {
-              print(await getExternalStorageDirectories());
-              String path = await FileManager.chooseFile(context: context);
-              print(path);
-            },
-            child: Text('data'),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// class _TempState extends State<Temp> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Column(
+//         children: [
+//           SizedBox(
+//             height: 100,
+//           ),
+//           FlatButton(
+//             onPressed: () async {
+//               print(await getExternalStorageDirectories());
+//               String path = await FileManager.chooseFile(context: context);
+//               print(path);
+//             },
+//             child: Text('data'),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

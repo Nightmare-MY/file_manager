@@ -6,15 +6,15 @@ homepage:
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
-  flutter: ">=1.17.0 <2.0.0"
+  flutter: ">=1.20.0 <2.0.0"
 
 dependencies:
+  draggable_scrollbar: ^0.0.4
   flutter:
     sdk: flutter
   global_repository:
     path: /Users/nightmare/Desktop/nightmare-space/plugins/global_repository
   # 可拖拽的ListView
-  draggable_scrollbar: ^0.0.4
   # 状态管理
   provider: ^3.1.0
   # Flutter 的一些动画
