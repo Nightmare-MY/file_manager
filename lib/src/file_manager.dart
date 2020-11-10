@@ -34,9 +34,6 @@ class FileManager extends StatelessWidget {
             body: FMPage(
               chooseFile: true,
               initpath: '$documentDir/YanTool/Rom',
-              callback: (String str) {
-                // Navigator.of(globalContext).pop(str);
-              },
             ),
           );
         },
@@ -57,11 +54,17 @@ class FileManager extends StatelessWidget {
           textTheme: const TextTheme(
             bodyText2: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w500),
           ),
+          iconTheme: const IconThemeData(
+            color: const Color(
+              0xff213349,
+            ),
+          ),
           brightness: Brightness.light,
           primaryColorBrightness: Brightness.dark,
           backgroundColor: Colors.white,
           accentColor: const Color(0xff213349),
           primaryColor: const Color(0xff213349),
+
           // cursorColor: Colors.red,
           // textSelectionColor: Colors.red,
           // textSelectionHandleColor: Colors.red,
@@ -178,6 +181,30 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
             ],
           );
         },
+      ),
+      bottomNavigationBar: SizedBox(
+        height: 48,
+        child: Material(
+          elevation: 8,
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.arrow_back_ios),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.add),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.arrow_forward_ios),
+              ),
+            ],
+          ),
+        ),
       ),
       // floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -313,10 +340,10 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
   }
 
   void temp() {
-    // ProcessResult result = Process.runSync('ls', ['/storage/emulated/0/DCIM']);
-    // print(result.stdout);
-    // print(result.stderr);
-    // print('object');
+     ProcessResult result = Process.runSync('ls', ['/storage/emulated/0/DCIM']);
+     print(result.stdout);
+     print(result.stderr);
+     print('object');
   }
 
   void initAnimation() {
@@ -359,9 +386,11 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
 
   Future<void> createWorkDir() async {
     // 创建 FileManager 文件夹
-    final Directory workDir = Directory('${Config.filesPath}/FileManager');
-    if (!workDir.existsSync()) {
-      await workDir.create(recursive: true);
+    if (Platform.isAndroid) {
+      final Directory workDir = Directory('${Config.filesPath}/FileManager');
+      if (!workDir.existsSync()) {
+        await workDir.create(recursive: true);
+      }
     }
   }
 
@@ -551,14 +580,16 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
                   showDialog<void>(
                     useRootNavigator: false,
                     context: context,
-                    builder: (BuildContext c) {
+                    builder: (_) {
                       return Theme(
-                        data: ThemeData(
-                            textTheme: TextTheme(
-                                bodyText2: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(fontSize: 10.0))),
+                        data: Theme.of(context).copyWith(
+                          textTheme: TextTheme(
+                            bodyText2: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(fontSize: 10.0),
+                          ),
+                        ),
                         child: PageChoose(
                           paths: _paths,
                           initIndex: currentPage,

@@ -39,7 +39,7 @@ class NiDirectory extends FileEntity {
   }
 
   Future<List<FileEntity>> listAndSort({
-    bool verbose = false,
+    bool verbose = true,
   }) async {
     // if (Platform.isWindows) {
     //   return await listAndSortForWin();
@@ -149,43 +149,47 @@ class NiDirectory extends FileEntity {
     }
     // ls 命令输出有空格上的对齐，不能用 list.split 然后以多个空格分开的方式来解析数据
     // 因为有的文件(夹)存在空格
-    _startIndex = _fullmessage[0].indexOf(
-      RegExp(':[0-9][0-9] '),
-    ); //获取文件名开始的地址
-    _startIndex += 4;
-    if (verbose) {
-      print('startIndex===>>>$_startIndex');
-    }
-    if (path == '/') {
-      //如果当前路径已经是/就不需要再加一个/了
-      for (int i = 0; i < _fullmessage.length; i++) {
-        FileEntity fileEntity;
-        if (_fullmessage[i].startsWith(RegExp('-|l'))) {
-          fileEntity = NiFile(
-              path + _fullmessage[i].substring(_startIndex), _fullmessage[i]);
-        } else {
-          fileEntity = NiDirectory.initWithFullInfo(
-              path + _fullmessage[i].substring(_startIndex), _fullmessage[i]);
-        }
-        _fileNodes.add(fileEntity);
+    print(_fullmessage);
+    if (_fullmessage.isNotEmpty) {
+      _startIndex = _fullmessage.first.indexOf(
+        RegExp(':[0-9][0-9] '),
+      ); //获取文件名开始的地址
+      _startIndex += 4;
+      if (verbose) {
+        print('startIndex===>>>$_startIndex');
       }
-    } else {
-      for (int i = 0; i < _fullmessage.length; i++) {
-        FileEntity fileEntity;
-        if (_fullmessage[i].startsWith(RegExp('-|l'))) {
-          fileEntity = NiFile(
-            '$path/' + _fullmessage[i].substring(_startIndex),
-            _fullmessage[i],
-          );
-        } else {
-          fileEntity = NiDirectory.initWithFullInfo(
-            '$path/' + _fullmessage[i].substring(_startIndex),
-            _fullmessage[i],
-          );
+      if (path == '/') {
+        //如果当前路径已经是/就不需要再加一个/了
+        for (int i = 0; i < _fullmessage.length; i++) {
+          FileEntity fileEntity;
+          if (_fullmessage[i].startsWith(RegExp('-|l'))) {
+            fileEntity = NiFile(
+                path + _fullmessage[i].substring(_startIndex), _fullmessage[i]);
+          } else {
+            fileEntity = NiDirectory.initWithFullInfo(
+                path + _fullmessage[i].substring(_startIndex), _fullmessage[i]);
+          }
+          _fileNodes.add(fileEntity);
         }
-        _fileNodes.add(fileEntity);
+      } else {
+        for (int i = 0; i < _fullmessage.length; i++) {
+          FileEntity fileEntity;
+          if (_fullmessage[i].startsWith(RegExp('-|l'))) {
+            fileEntity = NiFile(
+              '$path/' + _fullmessage[i].substring(_startIndex),
+              _fullmessage[i],
+            );
+          } else {
+            fileEntity = NiDirectory.initWithFullInfo(
+              '$path/' + _fullmessage[i].substring(_startIndex),
+              _fullmessage[i],
+            );
+          }
+          _fileNodes.add(fileEntity);
+        }
       }
     }
+
     _fileNodes.sort((FileEntity a, FileEntity b) => fileNodeCompare(a, b));
     return _fileNodes;
   }

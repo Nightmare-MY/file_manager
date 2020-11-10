@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:file_manager/src/dialog/apktool_decode_page.dart';
+import 'package:file_manager/src/dialog/long_press.dart';
 import 'package:global_repository/global_repository.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:file_manager/src/io/directory.dart';
@@ -19,13 +21,11 @@ class FMPage extends StatefulWidget {
   const FMPage({
     Key key,
     this.initpath,
-    this.callback,
     this.chooseFile = false,
     this.pathCallBack,
   }) : super(key: key);
   final String initpath; //打开文件管理器初始化的路径
   final bool chooseFile; //是用这个页面选择文件
-  final void Function(String str) callback; //这个用来返回文件的路径
   final PathCallback pathCallBack;
 
   @override
@@ -58,7 +58,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: ThemeData(
+      data: Theme.of(context).copyWith(
         iconTheme: IconThemeData(
           color: Theme.of(context).accentColor,
         ),
@@ -106,10 +106,6 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
 
   Future<void> initFMPage() async {
     //页面启动的时候的初始化
-
-    if (Platform.isMacOS) {
-      // documentsDir = './';
-    }
     eventBus.on<String>().listen((String event) {
       //当触发粘贴，删除等操作需要接收广播来进行刷新
       //这个eventBus的监听是为了检测何时刷新文件列表
@@ -119,6 +115,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
       }
     });
     _currentdirectory = widget.initpath ?? await PlatformUtil.documentsDir;
+    print(_currentdirectory);
     _getFileNodes(_currentdirectory);
   }
 
@@ -128,9 +125,11 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
     _animationController.forward();
   }
 
-  Future<void> _getFileNodes(String path, {Function afterSort}) async {
+  Future<void> _getFileNodes(String path, {void Function() afterSort}) async {
+    // 获取文件列表和刷新页面
     _fileNodes = await NiDirectory(path).listAndSort();
     setState(() {});
+    // 在一次获取后异步更新文件节点的其他参数，这个过程是非常快的
     getNodeFullArgs();
     if (afterSort != null) {
       afterSort();
@@ -152,13 +151,14 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
       });
     } else if (!fileNode.isFile) {
       //如果不是文件就进入这个文件夹
-      _historyOffset[_currentdirectory] =
-          _scrollController.offset; //进入文件夹前把当前文件夹浏览到的Offset保存下来
-      if (_currentdirectory == '/')
-        _currentdirectory = '$_currentdirectory${fileNode.nodeName}';
-      else
-        _currentdirectory =
-            '$_currentdirectory/${fileNode.nodeName}'; //是否是最顶层文件夹的
+      //进入文件夹前把当前文件夹浏览到的Offset保存下来
+      _historyOffset[_currentdirectory] = _scrollController.offset;
+      if (_currentdirectory == '/') {
+        //是否是最顶层文件夹的
+        _currentdirectory = '/${fileNode.nodeName}';
+      } else {
+        _currentdirectory = '$_currentdirectory/${fileNode.nodeName}';
+      }
       listIsBuilding = true;
       _getFileNodes(_currentdirectory, afterSort: () {
         repeatAnima();
@@ -168,21 +168,24 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
         });
       });
     } else if (widget.chooseFile) {
+      // 通过路由将文件路径带回去
       Navigator.pop(context, '$_currentdirectory/${fileNode.nodeName}');
-      widget.callback('$_currentdirectory/${fileNode.nodeName}');
     } else {
-      // print(FileType.isText(fileNode));
+      // --------------------------------
+      // 以下是当前节点是文件的情况
       if (FileEntity.isText(fileNode)) {
-        Navigator.of(context)
-            .push<void>(MaterialPageRoute<void>(builder: (BuildContext c) {
-          return TextEdit(
-            fileNode: fileNode as NiFile,
-          );
-        }));
+        Navigator.of(context).push<void>(
+          MaterialPageRoute<void>(
+            builder: (BuildContext c) {
+              return TextEdit(
+                fileNode: fileNode as NiFile,
+              );
+            },
+          ),
+        );
       }
 
       if (FileEntity.isImg(fileNode)) {
-        print('object');
         final List<FileEntity> _imagelist = <FileEntity>[];
         for (final FileEntity _file in _fileNodes) {
           if (FileEntity.isImg(_file)) {
@@ -213,6 +216,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
             },
           ),
         );
+        // --------------------------------
       }
     }
   }
@@ -229,21 +233,23 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
         initpage0 = 1;
         initpage1 = 1;
       }
-      // showCustomDialog2<void>(
-      //   context: context,
-      //   duration: const Duration(milliseconds: 200),
-      //   child: LongPressDialog(
-      //     fileNode: fileNode,
-      //     initpage0: initpage0,
-      //     initpage1: initpage1,
-      //     callback: () async {
-      //       _getFileNodes(
-      //         _currentdirectory,
-      //         afterSort: () {},
-      //       );
-      //     },
-      //   ),
-      // );
+      showCustomDialog<void>(
+        context: context,
+        child: Theme(
+          data: Theme.of(context),
+          child: LongPressDialog(
+            fileNode: fileNode,
+            initpage0: initpage0,
+            initpage1: initpage1,
+            callback: () async {
+              _getFileNodes(
+                _currentdirectory,
+                afterSort: () {},
+              );
+            },
+          ),
+        ),
+      );
     }
   }
 
@@ -271,9 +277,13 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
   Future<bool> onWillPop() async {
     // fiMaPageNotifier.removeAllCheck();
     //触发
-    if (widget.chooseFile) {
+    if (Scaffold.of(context).isDrawerOpen) {
       return true;
-    } //当在其他面直接唤起文件管理器的时候返回键直接pop
+    }
+    if (widget.chooseFile) {
+      //当在其他面直接唤起文件管理器的时候返回键直接pop
+      return true;
+    }
     if (_currentdirectory == '/') {
       if (!widget.chooseFile) {
         // PlatformChannel.Drawer.invokeMethod<void>('Exit');
@@ -300,8 +310,6 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
   }
 
   WillPopScope buildWillPopScope(BuildContext context) {
-    // print(MaterialState.hovered);
-    // FlatButton(hoverColor: ,onPressed: null, child: null);
     return WillPopScope(
       onWillPop: onWillPop,
       child: Material(
@@ -569,15 +577,14 @@ class _FileItemState extends State<FileItem>
                           child: IconButton(
                             icon: const Icon(Icons.build),
                             onPressed: () {
-                              // showCustomDialog2<void>(
-                              //   isPadding: false,
-                              //   context: context,
-                              //   duration: const Duration(milliseconds: 200),
-                              //   child: FullHeightListView(
-                              //     child: ApkToolDialog(
-                              //         fileNode: widget.fileNode as NiFile),
-                              //   ),
-                              // );
+                              showCustomDialog<void>(
+                                context: context,
+                                duration: const Duration(milliseconds: 200),
+                                child: FullHeightListView(
+                                  child: ApkToolDialog(
+                                      fileNode: widget.fileNode as NiFile),
+                                ),
+                              );
                             },
                           ),
                         ),

@@ -17,10 +17,16 @@ class FileManagerDrawer extends StatefulWidget {
   _FileManagerDrawerState createState() => _FileManagerDrawerState();
 }
 
-class _FileManagerDrawerState extends State<FileManagerDrawer> {
+class _FileManagerDrawerState extends State<FileManagerDrawer>
+    with SingleTickerProviderStateMixin {
   List<String> rootInfo = <String>[];
   List<String> sdcardInfo = <String>[];
   List<String> bookMarks = <String>[];
+  AnimationController controller;
+  // 根目录的大小动画
+  Animation<double> rootAnima;
+  // 根目录的大小动画
+  Animation<double> sdcardAnima;
   @override
   void initState() {
     super.initState();
@@ -29,25 +35,48 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
   }
 
   Future<void> init() async {
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
     final String result = await NiProcess.exec('df -k');
-    File('/storage/emulated/0/YanTool/123/2.txt').writeAsStringSync(result);
     final List<String> infos = result.split('\n');
     for (final String line in infos) {
       if (line.endsWith('/data')) {
         rootInfo = line.split(RegExp(r'\s{1,}'));
+        rootAnima = Tween<double>(
+          begin: 0,
+          end: int.parse(rootInfo[2]) / int.parse(rootInfo[1]),
+        ).animate(
+          CurvedAnimation(
+            curve: Curves.ease,
+            parent: controller,
+          ),
+        );
         setState(() {});
       }
       if (line.endsWith('/storage/emulated')) {
         sdcardInfo = line.split(RegExp(r'\s{1,}'));
+        sdcardAnima = Tween<double>(
+          begin: 0,
+          end: int.parse(sdcardInfo[2]) / int.parse(sdcardInfo[1]),
+        ).animate(
+          CurvedAnimation(
+            curve: Curves.ease,
+            parent: controller,
+          ),
+        );
         setState(() {});
       }
     }
-    // print(result);
+
+    controller.forward();
+    setState(() {});
+    print(result);
   }
 
   Future<void> initBookMarks() async {
     bookMarks = await BookMarks.getBookMarks();
-
     setState(() {});
   }
 
@@ -145,14 +174,24 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
                                         )
                                       else
                                         const SizedBox(),
-                                      LinearProgressIndicator(
-                                        backgroundColor: Colors.grey,
-                                        value: int.parse(rootInfo[2]) /
-                                            int.parse(rootInfo[1]),
-                                        valueColor: AlwaysStoppedAnimation(
-                                          Theme.of(context).accentColor,
-                                        ),
-                                      )
+                                      AnimatedBuilder(
+                                        animation: controller,
+                                        builder: (BuildContext context,
+                                            Widget child) {
+                                          return ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(4),
+                                            child: LinearProgressIndicator(
+                                              backgroundColor: Colors.grey,
+                                              value: rootAnima.value,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation(
+                                                Theme.of(context).accentColor,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -199,6 +238,24 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
                                         )
                                       else
                                         const SizedBox(),
+                                      AnimatedBuilder(
+                                        animation: controller,
+                                        builder: (BuildContext context,
+                                            Widget child) {
+                                          return ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(4),
+                                            child: LinearProgressIndicator(
+                                              backgroundColor: Colors.grey,
+                                              value: sdcardAnima.value,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation(
+                                                Theme.of(context).accentColor,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -234,30 +291,7 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
                                     Navigator.pop(context);
                                   },
                                   onLongPress: () {
-                                    // showCustomDialog2<void>(
-                                    //   context: context,
-                                    //   child: FullHeightListView(
-                                    //     child: Column(
-                                    //       children: <Widget>[
-                                    //         InkWell(
-                                    //           onTap: () {
-                                    //             BookMarks.removeMarks(
-                                    //                 bookMarks[i]);
-                                    //             Navigator.pop(context);
-                                    //             initBookMarks();
-                                    //           },
-                                    //           child: SizedBox(
-                                    //             height: 30.0,
-                                    //             width: MediaQuery.of(context)
-                                    //                 .size
-                                    //                 .width,
-                                    //             child: const Text('删除该书签'),
-                                    //           ),
-                                    //         )
-                                    //       ],
-                                    //     ),
-                                    //   ),
-                                    // );
+                                    onLongPress(i);
                                   },
                                   child: MarksItem(
                                     marksPath: bookMarks[i],
@@ -295,6 +329,38 @@ class _FileManagerDrawerState extends State<FileManagerDrawer> {
           ),
         ),
       ),
+    );
+  }
+
+  void onLongPress(int i) {
+    showDialog<void>(
+      context: context,
+      builder: (_) {
+        return Center(
+          child: SizedBox(
+            height: 36.0,
+            width: MediaQuery.of(context).size.width - 100,
+            child: Material(
+              borderRadius: BorderRadius.circular(8),
+              child: InkWell(
+                onTap: () async {
+                  await BookMarks.removeMarks(bookMarks[i]);
+                  Navigator.pop(context);
+                  initBookMarks();
+                },
+                child: const Center(
+                  child: Text(
+                    '删除该书签',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

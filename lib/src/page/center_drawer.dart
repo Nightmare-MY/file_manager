@@ -42,15 +42,18 @@ class _CenterDrawerState extends State<CenterDrawer>
             child: Stack(
               children: <Widget>[
                 if (_topDrawerController.value != 0.0)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Container(
-                      color: Colors.black
-                          .withOpacity(0.4 * _topDrawerController.value),
+                  GestureDetector(
+                    onTap: () {
+                      _topDrawerController.reverse();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: Container(
+                        color: Colors.black
+                            .withOpacity(0.4 * _topDrawerController.value),
+                      ),
                     ),
-                  )
-                else
-                  const SizedBox(),
+                  ),
                 if (_topDrawerController.value != 0.0)
                   ClipRRect(
                     borderRadius: const BorderRadius.all(

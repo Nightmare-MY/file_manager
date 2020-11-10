@@ -1,6 +1,6 @@
-# example
+# file_manager_example
 
-A new Flutter project.
+Demonstrates how to use the file_manager plugin.
 
 ## Getting Started
 

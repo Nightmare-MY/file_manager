@@ -38,158 +38,170 @@ class _PageChooseState extends State<PageChoose> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0x00f7f7f7),
-      body: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          Center(
-            child: ListView.builder(
-              cacheExtent: 9999,
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width / 6,
-                  right: MediaQuery.of(context).size.width / 6 - 20),
-              // physics: NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              // pageSnapping: false,
-              controller: ScrollController(
-                  initialScrollOffset: widget.initIndex *
-                          2 /
-                          3 *
-                          MediaQuery.of(context).size.width +
-                      20 * widget.initIndex),
-              itemCount: widget.paths.length,
-              itemBuilder: (BuildContext context, int index) {
-                // bool isCur = index == popPage;
-                // print(popPage);
-                return Column(
-                  // crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 20.0),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          height: MediaQuery.of(context).size.height / 2,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: <Widget>[
-                              AbsorbPointer(
-                                child: FMPage(
-                                  chooseFile: true,
-                                  key: GlobalObjectKey('FMZ$index'),
-                                  initpath: widget.paths[index],
-                                ),
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width / 1.5,
-                                height: MediaQuery.of(context).size.height / 2,
-                                child: Material(
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(12.0),
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          // print('object');
+          Navigator.pop(context);
+        },
+        child: Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            Center(
+              child: ListView.builder(
+                cacheExtent: 9999,
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width / 6,
+                    right: MediaQuery.of(context).size.width / 6 - 20),
+                // physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                // pageSnapping: false,
+                controller: ScrollController(
+                    initialScrollOffset: widget.initIndex *
+                            2 /
+                            3 *
+                            MediaQuery.of(context).size.width +
+                        20 * widget.initIndex),
+                itemCount: widget.paths.length,
+                itemBuilder: (BuildContext context, int index) {
+                  // bool isCur = index == popPage;
+                  // print(popPage);
+                  return Column(
+                    // crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.5,
+                            height: MediaQuery.of(context).size.height / 2,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: <Widget>[
+                                AbsorbPointer(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: FMPage(
+                                      chooseFile: true,
+                                      key: GlobalObjectKey('FMZ$index'),
+                                      initpath: widget.paths[index],
                                     ),
                                   ),
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    highlightColor: const Color(0x88d9d9d9),
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(12.0),
-                                    ),
-                                    onTap: () {
-                                      Navigator.of(context).pop();
-                                      widget.changePageCall(index);
-                                    },
-                                  ),
                                 ),
-                              ),
-                              Align(
-                                alignment: const Alignment(1, -1),
-                                child: SizedBox(
-                                  width: 36.0,
-                                  height: 36.0,
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.5,
+                                  height:
+                                      MediaQuery.of(context).size.height / 2,
                                   child: Material(
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
-                                        Radius.circular(20.0),
+                                        Radius.circular(12.0),
                                       ),
                                     ),
                                     color: Colors.transparent,
                                     child: InkWell(
-                                      highlightColor: const Color(0xffd9d9d9),
+                                      highlightColor: const Color(0x88d9d9d9),
                                       borderRadius: const BorderRadius.all(
-                                        Radius.circular(20.0),
+                                        Radius.circular(12.0),
                                       ),
-                                      onTapDown: (_) {
-                                        // Vibration.vibrate(
-                                        //     duration: 40, amplitude: 255);
-                                      },
                                       onTap: () {
-                                        if (widget.paths.length > 1) {
-                                          final int tmp = index;
-                                          widget.paths.removeAt(tmp);
-                                          widget.deletePageCall(tmp);
-                                          setState(() {});
-                                        } else {
-                                          // showToast(
-                                          //     context: context,
-                                          //     message: '至少需要一个页面');
-                                        }
+                                        Navigator.of(context).pop();
+                                        widget.changePageCall(index);
                                       },
-                                      child: const Icon(
-                                        Icons.clear,
-                                        size: 24.0,
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: const Alignment(1, -1),
+                                  child: SizedBox(
+                                    width: 36.0,
+                                    height: 36.0,
+                                    child: Material(
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(20.0),
+                                        ),
+                                      ),
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        highlightColor: const Color(0xffd9d9d9),
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(20.0),
+                                        ),
+                                        onTapDown: (_) {
+                                          // Vibration.vibrate(
+                                          //     duration: 40, amplitude: 255);
+                                        },
+                                        onTap: () {
+                                          if (widget.paths.length > 1) {
+                                            final int tmp = index;
+                                            widget.paths.removeAt(tmp);
+                                            widget.deletePageCall(tmp);
+                                            setState(() {});
+                                          } else {
+                                            // showToast(
+                                            //     context: context,
+                                            //     message: '至少需要一个页面');
+                                          }
+                                        },
+                                        child: const Icon(
+                                          Icons.clear,
+                                          size: 24.0,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Text(
-                      widget.paths[index],
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ],
-                );
-              },
+                      Text(
+                        widget.paths[index],
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
-          ),
-          Align(
-            alignment: const Alignment(0, 0.8),
-            child: SizedBox(
-              width: 128.0,
-              height: 36.0,
-              child: Material(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20.0),
+            Align(
+              alignment: const Alignment(0, 0.8),
+              child: SizedBox(
+                width: 128.0,
+                height: 36.0,
+                child: Material(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20.0),
+                    ),
                   ),
-                ),
-                color: const Color(0xffededed),
-                child: InkWell(
-                  highlightColor: const Color(0xffd9d9d9),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(20.0),
-                  ),
-                  onTapDown: (_) {
-                    // Vibration.vibrate(duration: 40, amplitude: 255);
-                  },
-                  onTap: () {
-                    widget.addNewPageCall();
-                  },
-                  child: const Icon(
-                    Icons.add,
-                    size: 36.0,
+                  color: const Color(0xffededed),
+                  child: InkWell(
+                    highlightColor: const Color(0xffd9d9d9),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(20.0),
+                    ),
+                    onTapDown: (_) {
+                      // Vibration.vibrate(duration: 40, amplitude: 255);
+                    },
+                    onTap: () {
+                      widget.addNewPageCall();
+                    },
+                    child: const Icon(
+                      Icons.add,
+                      size: 36.0,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
