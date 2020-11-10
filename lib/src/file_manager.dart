@@ -55,7 +55,7 @@ class FileManager extends StatelessWidget {
             bodyText2: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w500),
           ),
           iconTheme: const IconThemeData(
-            color: const Color(
+            color: Color(
               0xff213349,
             ),
           ),
@@ -340,10 +340,10 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
   }
 
   void temp() {
-     ProcessResult result = Process.runSync('ls', ['/storage/emulated/0/DCIM']);
-     print(result.stdout);
-     print(result.stderr);
-     print('object');
+    ProcessResult result = Process.runSync('ls', ['/storage/emulated/0/DCIM']);
+    print(result.stdout);
+    print(result.stderr);
+    print('object');
   }
 
   void initAnimation() {
@@ -391,6 +391,32 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
       if (!workDir.existsSync()) {
         await workDir.create(recursive: true);
       }
+      File('${Config.binPath}/apktool').writeAsStringSync(
+          '''mkfifo /data/data/com.nightmare/files/Apktool/apktool_lock >/dev/null 2>&1
+            echo -n apktoolFunc "\$@"
+            {
+              cat /data/data/com.nightmare/files/Apktool/apktool_lock
+            } &
+            while [ -p /data/data/com.nightmare/files/Apktool/apktool_lock ]
+            do {
+              sleep 0.5
+            }
+            done
+            exit''');
+      File('${Config.binPath}/baksmali').writeAsStringSync(
+          '''mkfifo /data/data/com.nightmare/files/Apktool/apktool_lock >/dev/null 2>&1
+            echo -n baksmaliFunc "\$@"
+            {
+              cat /data/data/com.nightmare/files/Apktool/apktool_lock
+            } &
+            while [ -p /data/data/com.nightmare/files/Apktool/apktool_lock ]
+            do {
+              sleep 0.5
+            }
+            done
+            exit''');
+      File('${Config.binPath}/smali')
+          .writeAsStringSync('echo -n smaliFunc \"\$@\"');
     }
   }
 

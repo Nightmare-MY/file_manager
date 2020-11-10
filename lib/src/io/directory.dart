@@ -39,7 +39,7 @@ class NiDirectory extends FileEntity {
   }
 
   Future<List<FileEntity>> listAndSort({
-    bool verbose = true,
+    bool verbose = false,
   }) async {
     // if (Platform.isWindows) {
     //   return await listAndSortForWin();

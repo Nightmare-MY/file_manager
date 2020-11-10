@@ -52,16 +52,3 @@ android {
 flutter {
     source '../..'
 }
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'org.smali:smali:2.3.1'
-    implementation 'org.smali:baksmali:2.3.1'
-    implementation 'xmlunit:xmlunit:1.6'
-    implementation 'org.yaml:snakeyaml:1.18:android'
-    //noinspection GradleDependency
-    implementation 'com.google.guava:guava:14.0'
-    implementation 'commons-cli:commons-cli:1.4'
-    implementation 'commons-io:commons-io:2.4'
-    implementation 'org.apache.commons:commons-lang3:3.1'
-}

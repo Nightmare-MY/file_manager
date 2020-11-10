@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:file_manager/src/config/config.dart';
 import 'package:file_manager/src/dialog/apktool_decode_page.dart';
 import 'package:file_manager/src/dialog/long_press.dart';
+import 'package:flutter/services.dart';
 import 'package:global_repository/global_repository.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:file_manager/src/io/directory.dart';
