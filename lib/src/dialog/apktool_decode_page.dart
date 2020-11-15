@@ -1,8 +1,12 @@
 import 'dart:io';
 
+import 'package:file_manager/src/config/config.dart';
 import 'package:file_manager/src/io/file.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:global_repository/global_repository.dart';
+
+import 'apktool_decode_all.dart';
 
 class ApkToolDialog extends StatefulWidget {
   const ApkToolDialog({Key key, @required this.fileNode}) : super(key: key);
@@ -44,64 +48,131 @@ class _ApkToolDialogState extends State<ApkToolDialog> {
     );
   }
 
+  Widget child;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Text(_fileNode.nodeName),
-        apkToolItem(
-          '反编译全部',
-          () {
+    child ??= FullHeightListView(
+      child: Column(
+        children: <Widget>[
+          Text(_fileNode.nodeName),
+          apkToolItem(
+            '反编译全部',
+            () {
+              final String _name = widget.fileNode.path.replaceAll(
+                RegExp('.*/|\\..*'),
+                '',
+              );
+              DialogBuilder.changeHeight(0);
+              child = ApktoolDecodeAll(
+                fileNode: widget.fileNode,
+                cmd:
+                    'apktool d ${widget.fileNode.path} -f -o ${FileSystemEntity.parentOf(widget.fileNode.path)}/$_name\_src '
+                    '-p ${Config.filesPath}/Apktool/Framework',
+              );
+              setState(() {});
+              // Navigator.pop(context);
+              // showCustomDialog<void>(
+              //   height: 600.0,
+              //   child: Niterm(
+              //     showOnDialog: true,
+              //     script: 'apktool  d ${widget.fileNode.path} '
+              //         "-f -o ${FileSystemEntity.parentOf(widget.fileNode.path)}/${widget.fileNode.nodeName.replaceAll(".apk", "")}_src "
+              //         '-p /data/data/com.nightmare/files/Apktool/Framework/',
+              //   ),
+              // );
+            },
+          ),
+          apkToolItem('反编译dex', () {
+            final String _name = widget.fileNode.path.replaceAll(
+              RegExp('.*/|\\..*'),
+              '',
+            );
+            DialogBuilder.changeHeight(0);
+            child = ApktoolDecodeAll(
+              fileNode: widget.fileNode,
+              cmd:
+                  'apktool d ${widget.fileNode.path} -f -r -o ${FileSystemEntity.parentOf(widget.fileNode.path)}/$_name\_src '
+                  '-p ${Config.filesPath}/Apktool/Framework',
+            );
+            setState(() {});
             // Navigator.pop(context);
             // showCustomDialog<void>(
+            //   isPadding: false,
             //   height: 600.0,
             //   child: Niterm(
             //     showOnDialog: true,
             //     script: 'apktool  d ${widget.fileNode.path} '
-            //         "-f -o ${FileSystemEntity.parentOf(widget.fileNode.path)}/${widget.fileNode.nodeName.replaceAll(".apk", "")}_src "
+            //         "-f -r -o ${FileSystemEntity.parentOf(widget.fileNode.path)}/${widget.fileNode.nodeName.replaceAll(".apk", "")}_src "
             //         '-p /data/data/com.nightmare/files/Apktool/Framework/',
             //   ),
             // );
-          },
-        ),
-        apkToolItem('反编译dex', () {
-          // Navigator.pop(context);
-          // showCustomDialog<void>(
-          //   isPadding: false,
-          //   height: 600.0,
-          //   child: Niterm(
-          //     showOnDialog: true,
-          //     script: 'apktool  d ${widget.fileNode.path} '
-          //         "-f -r -o ${FileSystemEntity.parentOf(widget.fileNode.path)}/${widget.fileNode.nodeName.replaceAll(".apk", "")}_src "
-          //         '-p /data/data/com.nightmare/files/Apktool/Framework/',
-          //   ),
-          // );
-        }),
-        apkToolItem('反编译res', () {
-          // Navigator.pop(context);
-          // showCustomDialog2<void>(
-          //   isPadding: false,
-          //   height: 600.0,
-          //   child: Niterm(
-          //     showOnDialog: true,
-          //     script: 'apktool  d ${widget.fileNode.path} '
-          //         "-f -s -o ${FileSystemEntity.parentOf(widget.fileNode.path)}/${widget.fileNode.nodeName.replaceAll(".apk", "")}_src "
-          //         '-p /data/data/com.nightmare/files/Apktool/Framework/',
-          //   ),
-          // );
-        }),
-        apkToolItem('签名', () {}),
-        apkToolItem('Zipalign', () {}),
-        apkToolItem('解压出META-INF', () {}),
-        apkToolItem('添加META-INF', () {}),
-        apkToolItem('删除dex', () {}),
-        apkToolItem('删除META-INF', () {}),
-        apkToolItem('导入框架', () {
-          //TODO
-          // Niterm.exec(
-          //     'echo apktool if ${_fileNode.path} -p /data/data/com.nightmare/files/Apktool/Framework');
-        }),
-      ],
+          }),
+          apkToolItem('反编译res', () {
+            final String _name = widget.fileNode.path.replaceAll(
+              RegExp('.*/|\\..*'),
+              '',
+            );
+            DialogBuilder.changeHeight(0);
+            child = ApktoolDecodeAll(
+              fileNode: widget.fileNode,
+              cmd:
+                  'apktool d ${widget.fileNode.path} -f -s -o ${FileSystemEntity.parentOf(widget.fileNode.path)}/$_name\_src '
+                  '-p ${Config.filesPath}/Apktool/Framework',
+            );
+            setState(() {});
+            // Navigator.pop(context);
+            // showCustomDialog2<void>(
+            //   isPadding: false,
+            //   height: 600.0,
+            //   child: Niterm(
+            //     showOnDialog: true,
+            //     script: 'apktool  d ${widget.fileNode.path} '
+            //         "-f -s -o ${FileSystemEntity.parentOf(widget.fileNode.path)}/${widget.fileNode.nodeName.replaceAll(".apk", "")}_src "
+            //         '-p /data/data/com.nightmare/files/Apktool/Framework/',
+            //   ),
+            // );
+          }),
+          apkToolItem('签名', () {}),
+          apkToolItem('Zipalign', () {}),
+          apkToolItem('解压出META-INF', () {
+            DialogBuilder.changeHeight(0);
+            child = ApktoolDecodeAll(
+              fileNode: widget.fileNode,
+              cmd:
+                  '7z x ${widget.fileNode.path} -o${FileSystemEntity.parentOf(widget.fileNode.path)} META-INF',
+            );
+            setState(() {});
+          }),
+          apkToolItem('添加META-INF', () {
+            DialogBuilder.changeHeight(0);
+            child = ApktoolDecodeAll(
+              fileNode: widget.fileNode,
+              cmd:
+                  '7z a ${widget.fileNode.path} ${FileSystemEntity.parentOf(widget.fileNode.path)}/META-INF',
+            );
+            setState(() {});
+          }),
+          apkToolItem('删除dex', () {}),
+          apkToolItem('删除META-INF', () {
+            DialogBuilder.changeHeight(0);
+            child = ApktoolDecodeAll(
+              fileNode: widget.fileNode,
+              cmd: '7z d ${widget.fileNode.path} META-INF',
+            );
+            setState(() {});
+          }),
+          apkToolItem('导入框架', () {
+            DialogBuilder.changeHeight(0);
+            child = ApktoolDecodeAll(
+              fileNode: widget.fileNode,
+              cmd: 'apktool if ${widget.fileNode.path} '
+                  '-p ${Config.filesPath}/Apktool/Framework',
+            );
+            setState(() {});
+          }),
+        ],
+      ),
     );
+    return child;
   }
 }

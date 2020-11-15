@@ -582,9 +582,8 @@ class _FileItemState extends State<FileItem>
                               showCustomDialog<void>(
                                 context: context,
                                 duration: const Duration(milliseconds: 200),
-                                child: FullHeightListView(
-                                  child: ApkToolDialog(
-                                      fileNode: widget.fileNode as NiFile),
+                                child: ApkToolDialog(
+                                  fileNode: widget.fileNode as NiFile,
                                 ),
                               );
                             },

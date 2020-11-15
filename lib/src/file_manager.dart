@@ -31,9 +31,12 @@ class FileManager extends StatelessWidget {
               centerTitle: true,
               title: const Text('选择文件'),
             ),
-            body: FMPage(
-              chooseFile: true,
-              initpath: '$documentDir/YanTool/Rom',
+            body: Theme(
+              data: Theme.of(context),
+              child: FMPage(
+                chooseFile: true,
+                initpath: '$documentDir/YanTool/Rom',
+              ),
             ),
           );
         },
@@ -387,29 +390,41 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
   Future<void> createWorkDir() async {
     // 创建 FileManager 文件夹
     if (Platform.isAndroid) {
-      final Directory workDir = Directory('${Config.filesPath}/FileManager');
+      Directory workDir = Directory('${Config.filesPath}/FileManager');
+      if (!workDir.existsSync()) {
+        await workDir.create(recursive: true);
+      }
+      workDir = Directory(Config.binPath);
+      if (!workDir.existsSync()) {
+        await workDir.create(recursive: true);
+      }
+      workDir = Directory(Config.filesPath + '/Apktool');
+      if (!workDir.existsSync()) {
+        await workDir.create(recursive: true);
+      }
+      workDir = Directory(Config.filesPath + '/Apktool/Framework');
       if (!workDir.existsSync()) {
         await workDir.create(recursive: true);
       }
       File('${Config.binPath}/apktool').writeAsStringSync(
-          '''mkfifo /data/data/com.nightmare/files/Apktool/apktool_lock >/dev/null 2>&1
+          '''mkfifo /data/data/${Config.packageName}/files/Apktool/apktool_lock >/dev/null 2>&1
             echo -n apktoolFunc "\$@"
             {
-              cat /data/data/com.nightmare/files/Apktool/apktool_lock
+              cat /data/data/${Config.packageName}/files/Apktool/apktool_lock
             } &
-            while [ -p /data/data/com.nightmare/files/Apktool/apktool_lock ]
+            while [ -p /data/data/${Config.packageName}/files/Apktool/apktool_lock ]
             do {
               sleep 0.5
             }
             done
             exit''');
       File('${Config.binPath}/baksmali').writeAsStringSync(
-          '''mkfifo /data/data/com.nightmare/files/Apktool/apktool_lock >/dev/null 2>&1
+          '''mkfifo /data/data/${Config.packageName}/files/Apktool/apktool_lock >/dev/null 2>&1
             echo -n baksmaliFunc "\$@"
             {
-              cat /data/data/com.nightmare/files/Apktool/apktool_lock
+              cat /data/data/${Config.packageName}/files/Apktool/apktool_lock
             } &
-            while [ -p /data/data/com.nightmare/files/Apktool/apktool_lock ]
+            while [ -p /data/data/${Config.packageName}/files/Apktool/apktool_lock ]
             do {
               sleep 0.5
             }
@@ -417,6 +432,11 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
             exit''');
       File('${Config.binPath}/smali')
           .writeAsStringSync('echo -n smaliFunc \"\$@\"');
+      NiProcess.exec(
+        'chmod 777 ${Config.binPath}/apktool\n'
+        'chmod 777 ${Config.binPath}/baksmali\n'
+        'chmod 777 ${Config.binPath}/smali\n',
+      );
     }
   }
 
