@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:event_bus/event_bus.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -21,7 +22,7 @@ Directory appDocDir;
 class FileManager extends StatelessWidget {
   // static initFileManager
   static Future<String> chooseFile({@required BuildContext context}) async {
-    final String documentDir = await PlatformUtil.documentsDir;
+    final String documentDir = PlatformUtil.documentsDir;
     return await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) {
