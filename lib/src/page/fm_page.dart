@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:file_manager/src/config/config.dart';
 import 'package:file_manager/src/dialog/apktool_decode_page.dart';
 import 'package:file_manager/src/dialog/long_press.dart';
-import 'package:flutter/services.dart';
+import 'package:file_manager/src/widgets/item_imgheader.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:global_repository/global_repository.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:file_manager/src/io/directory.dart';
@@ -12,8 +12,8 @@ import 'package:file_manager/src/io/file_entity.dart';
 import 'package:file_manager/src/provider/file_manager_notifier.dart';
 import 'package:flutter/material.dart';
 import '../file_manager.dart';
-import '../fm_function.dart';
 import 'text_edit.dart';
+import 'widget/file_item_suffix.dart';
 
 Directory appDocDir;
 
@@ -65,7 +65,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
           color: Theme.of(context).accentColor,
         ),
       ),
-      child: buildWillPopScope(context),
+      child: buldHome(context),
     );
   }
 
@@ -311,7 +311,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  WillPopScope buildWillPopScope(BuildContext context) {
+  WillPopScope buldHome(BuildContext context) {
     return WillPopScope(
       onWillPop: onWillPop,
       child: Material(
@@ -353,20 +353,20 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
         final String currentFile =
             _tmp.first.split('/').last.toString(); //取前面那个就没错
         return FileItem(
-          checkCall: (String path) {
-            // if (fiMaPageNotifier.checkPath.contains(path)) {
-            //   fiMaPageNotifier.removeCheck(path);
-            // } else {
-            //   fiMaPageNotifier.addCheck(path);
-            // }
-          },
-          // isCheck: fiMaPageNotifier.checkPath.contains(_fileNodes[index].path),
-          fileNode: _fileNodes[index],
-          onTap: () => itemOnTap(_fileNodes[index]),
-          apkTool: () {},
-          onLongPress: () =>
-              itemOnLongPress(currentFile, _fileNodes[index], context),
-        );
+            checkCall: (String path) {
+              // if (fiMaPageNotifier.checkPath.contains(path)) {
+              //   fiMaPageNotifier.removeCheck(path);
+              // } else {
+              //   fiMaPageNotifier.addCheck(path);
+              // }
+            },
+            // isCheck: fiMaPageNotifier.checkPath.contains(_fileNodes[index].path),
+            fileNode: _fileNodes[index],
+            onTap: () => itemOnTap(_fileNodes[index]),
+            apkTool: () {},
+            onLongPress: () {
+              itemOnLongPress(currentFile, _fileNodes[index], context);
+            });
       },
     );
   }
@@ -409,9 +409,10 @@ class _FileItemState extends State<FileItem>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-
-    curvedAnimation =
-        CurvedAnimation(parent: _animationController, curve: Curves.bounceOut);
+    curvedAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.bounceOut,
+    );
     tweenPadding = Tween<double>(
       begin: dx,
       end: 0,
@@ -469,7 +470,8 @@ class _FileItemState extends State<FileItem>
   Widget build(BuildContext context) {
     // print(fiMaPageNotifier.checkNodes);
     final List<String> _tmp = widget.fileNode.path.split(' -> '); //有的有符号链接
-    final String currentFile = _tmp.first.split('/').last.toString(); //取前面那个就没错
+    final String currentFileName =
+        _tmp.first.split('/').last.toString(); //取前面那个就没错
     // /bin -> /system/bin
     final Widget _iconData = getWidgetFromExtension(
       widget.fileNode,
@@ -502,93 +504,79 @@ class _FileItemState extends State<FileItem>
             },
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onHorizontalDragStart: _handleDragStart,
-              onHorizontalDragUpdate: _handleDragUpdate,
-              onHorizontalDragEnd: _handleDragEnd,
+              // onHorizontalDragStart: _handleDragStart,
+              // onHorizontalDragUpdate: _handleDragUpdate,
+              // onHorizontalDragEnd: _handleDragEnd,
               child: Transform(
                 transform: Matrix4.identity()..translate(dx),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                  ),
                   child: Stack(
                     children: <Widget>[
                       Row(
                         children: <Widget>[
+                          // header icon
                           SizedBox(
                             width: 30,
                             height: 30,
                             child: _iconData,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width - 35,
-                                child: Text(
-                                  currentFile,
-                                  maxLines: 1,
-                                  softWrap: false,
-                                  overflow: TextOverflow.fade,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontFamily: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .fontFamily,
+                          SingleChildScrollView(
+                            // physics: ,
+                            scrollDirection: Axis.horizontal,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(
+                                  // width: MediaQuery.of(context).size.width,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Text(
+                                      currentFileName,
+                                      maxLines: 1,
+                                      softWrap: false,
+                                      overflow: TextOverflow.fade,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontFamily: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1
+                                            .fontFamily,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Text(
-                                '${widget.fileNode.modified}  ${widget.fileNode.itemsNumber}  ${widget.fileNode.size}  ${widget.fileNode.mode}',
-                                maxLines: 1,
-                                style: TextStyle(
-                                  // fontSize: 12,
-                                  fontFamily: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .fontFamily,
-                                  color: Colors.black54,
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width -
+                                        8 -
+                                        30,
+                                    child: Text(
+                                      widget.fileNode.info,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        // fontSize: 12,
+                                        fontFamily: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1
+                                            .fontFamily,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                      if (widget.fileNode.nodeName.endsWith('_src') &&
-                          widget.fileNode.isDirectory)
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: IconButton(
-                            icon: const Icon(Icons.build),
-                            onPressed: () {
-                              // showCustomDialog2<void>(
-                              //   isPadding: false,
-                              //   context: context,
-                              //   duration: const Duration(milliseconds: 200),
-                              //   child: FullHeightListView(
-                              //     child: ApkToolEncode(
-                              //         fileNode: widget.fileNode as NiFile),
-                              //   ),
-                              // );
-                            },
-                          ),
-                        ),
-                      if (widget.fileNode.nodeName.endsWith('apk'))
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: IconButton(
-                            icon: const Icon(Icons.build),
-                            onPressed: () {
-                              showCustomDialog<void>(
-                                context: context,
-                                duration: const Duration(milliseconds: 200),
-                                child: ApkToolDialog(
-                                  fileNode: widget.fileNode as NiFile,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
+                      FileItemSuffix(
+                        fileNode: widget.fileNode,
+                      ),
                       if (_tmp.length == 2)
                         const Align(
                           alignment: Alignment.centerRight,
@@ -605,6 +593,45 @@ class _FileItemState extends State<FileItem>
           ),
         ],
       ),
+    );
+  }
+}
+
+Widget getWidgetFromExtension(FileEntity fileNode, BuildContext context,
+    [bool isFile = true]) {
+  if (isFile) {
+    if (fileNode.nodeName.endsWith('.zip'))
+      return SvgPicture.asset(
+        'packages/file_manager/assets/icon/zip.svg',
+        width: 20.0,
+        height: 20.0,
+        color: Theme.of(context).iconTheme.color,
+      );
+    else if (fileNode.nodeName.endsWith('.apk'))
+      return const Icon(
+        Icons.android,
+      );
+    else if (fileNode.nodeName.endsWith('.mp4'))
+      return const Icon(
+        Icons.video_library,
+      );
+    else if (fileNode.nodeName.endsWith('.jpg') ||
+        fileNode.nodeName.endsWith('.png')) {
+      return ItemImgHeader(
+        fileNode: fileNode as NiFile,
+      );
+    } else
+      return SvgPicture.asset(
+        'packages/file_manager/assets/icon/file.svg',
+        width: 20.0,
+        height: 20.0,
+      );
+  } else {
+    return SvgPicture.asset(
+      'packages/file_manager/assets/icon/directory.svg',
+      width: 20.0,
+      height: 20.0,
+      color: Theme.of(context).iconTheme.color,
     );
   }
 }
