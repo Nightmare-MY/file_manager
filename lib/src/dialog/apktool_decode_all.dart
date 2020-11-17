@@ -117,7 +117,7 @@ class _ApktoolDecodeAllState extends State<ApktoolDecodeAll> {
           setState(() {});
           print(_scrollController.position.viewportDimension +
               _scrollController.position.maxScrollExtent);
-          Future.delayed(Duration(milliseconds: 100), () {
+          Future.delayed(const Duration(milliseconds: 100), () {
             dialogeventBus.fire(
               Height(
                 _scrollController.position.viewportDimension +
