@@ -1,15 +1,20 @@
 # file_manager
 
-A new flutter plugin project.
+一个文件管理器
 
-## Getting Started
+## 使用方法
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+### 在 yaml 中引入该plugin
+```yaml
+    file_manager:
+        git: https://github.com/nightmare-space/file_manager
+```
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 使用组件
+就像下面这么简单
 
+
+
+### Q&A
+#### 为何是作为一个 plugin 而不是 dart packages ？
+因为需要调用 java 的库来进行 apk/dex 的反编译。
