@@ -42,4 +42,7 @@ abstract class FileEntity {
     final String type = fileNode.nodeName.replaceAll(RegExp('.*\\.'), '');
     return imagetype.contains(type);
   }
+
+  // 用在显示文件item的subtitle
+  String get info => '$modified  $itemsNumber  $size  $mode';
 }
