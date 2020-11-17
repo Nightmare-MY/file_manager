@@ -1,6 +1,5 @@
 # file_manager
-
-一个文件管理器
+Flutter 开发的文件管理器
 
 ## 使用方法
 
