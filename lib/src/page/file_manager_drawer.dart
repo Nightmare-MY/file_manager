@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import '../colors/file_colors.dart';
 import '../file_manager.dart';
 import '../utils/bookmarks.dart';
+import 'setting.dart';
 
 class FileManagerDrawer extends StatefulWidget {
   const FileManagerDrawer({
@@ -110,221 +111,250 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
             topRight: Radius.circular(16.0),
             bottomRight: Radius.circular(16.0),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                height: 100,
-                color: FileColors.fileAppColor,
-              ),
-              Material(
-                  color: Colors.white,
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height - 100.0,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        const Padding(
-                          padding: EdgeInsets.only(left: 4.0, top: 4.0),
-                          child: Text(
-                            '本地路径',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14.0,
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    height: 100,
+                    color: FileColors.fileAppColor,
+                  ),
+                  Material(
+                    color: Colors.white,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height - 100.0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          const Padding(
+                            padding: EdgeInsets.only(left: 4.0, top: 4.0),
+                            child: Text(
+                              '本地路径',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14.0,
+                              ),
                             ),
                           ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            eventBus.fire('/');
-                            Navigator.pop(context);
-                          },
-                          child: SizedBox(
-                            height: 48.0,
-                            width: MediaQuery.of(context).size.width,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      const Text(
-                                        '根目录',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold,
+                          InkWell(
+                            onTap: () {
+                              eventBus.fire('/');
+                              Navigator.pop(context);
+                            },
+                            child: SizedBox(
+                              height: 48.0,
+                              width: MediaQuery.of(context).size.width,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        const Text(
+                                          '根目录',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      if (rootInfo.isNotEmpty)
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Text(rootInfo[0]),
-                                            Text(
-                                                '${FileSizeUtils.getFileSizeFromStr('${int.parse(rootInfo[2]) * 1024}')}/ ${FileSizeUtils.getFileSizeFromStr('${int.parse(rootInfo[1]) * 1024}')}')
-                                          ],
-                                        )
-                                      else
-                                        const SizedBox(),
-                                      AnimatedBuilder(
-                                        animation: controller,
-                                        builder: (BuildContext context,
-                                            Widget child) {
-                                          return ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(4),
-                                            child: LinearProgressIndicator(
-                                              backgroundColor: Colors.grey,
-                                              value: rootAnima.value,
-                                              valueColor:
-                                                  AlwaysStoppedAnimation(
-                                                Theme.of(context).accentColor,
+                                        if (rootInfo.isNotEmpty)
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Text(rootInfo[0]),
+                                              Text(
+                                                  '${FileSizeUtils.getFileSizeFromStr('${int.parse(rootInfo[2]) * 1024}')}/ ${FileSizeUtils.getFileSizeFromStr('${int.parse(rootInfo[1]) * 1024}')}')
+                                            ],
+                                          )
+                                        else
+                                          const SizedBox(),
+                                        AnimatedBuilder(
+                                          animation: controller,
+                                          builder: (BuildContext context,
+                                              Widget child) {
+                                            return ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                              child: LinearProgressIndicator(
+                                                backgroundColor: Colors.grey,
+                                                value: rootAnima.value,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation(
+                                                  Theme.of(context).accentColor,
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            eventBus.fire(await PlatformUtil.documentsDir);
-                            Navigator.pop(context);
-                          },
-                          child: SizedBox(
-                            height: 48.0,
-                            width: MediaQuery.of(context).size.width,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      const Text(
-                                        '外部储存',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold,
+                                            );
+                                          },
                                         ),
-                                      ),
-                                      if (sdcardInfo.isNotEmpty)
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Text(sdcardInfo[0]),
-                                            Text(
-                                                '${FileSizeUtils.getFileSizeFromStr('${int.parse(sdcardInfo[2]) * 1024}')}/ ${FileSizeUtils.getFileSizeFromStr('${int.parse(sdcardInfo[1]) * 1024}')}')
-                                          ],
-                                        )
-                                      else
-                                        const SizedBox(),
-                                      AnimatedBuilder(
-                                        animation: controller,
-                                        builder: (BuildContext context,
-                                            Widget child) {
-                                          return ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(4),
-                                            child: LinearProgressIndicator(
-                                              backgroundColor: Colors.grey,
-                                              value: sdcardAnima.value,
-                                              valueColor:
-                                                  AlwaysStoppedAnimation(
-                                                Theme.of(context).accentColor,
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              eventBus.fire(await PlatformUtil.documentsDir);
+                              Navigator.pop(context);
+                            },
+                            child: SizedBox(
+                              height: 48.0,
+                              width: MediaQuery.of(context).size.width,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        const Text(
+                                          '外部储存',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        if (sdcardInfo.isNotEmpty)
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Text(sdcardInfo[0]),
+                                              Text(
+                                                  '${FileSizeUtils.getFileSizeFromStr('${int.parse(sdcardInfo[2]) * 1024}')}/ ${FileSizeUtils.getFileSizeFromStr('${int.parse(sdcardInfo[1]) * 1024}')}')
+                                            ],
+                                          )
+                                        else
+                                          const SizedBox(),
+                                        AnimatedBuilder(
+                                          animation: controller,
+                                          builder: (BuildContext context,
+                                              Widget child) {
+                                            return ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                              child: LinearProgressIndicator(
+                                                backgroundColor: Colors.grey,
+                                                value: sdcardAnima.value,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation(
+                                                  Theme.of(context).accentColor,
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ],
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 4.0, top: 4.0),
-                          child: Text(
-                            '书签',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w500,
+                          const Padding(
+                            padding: EdgeInsets.only(left: 4.0, top: 4.0),
+                            child: Text(
+                              '书签',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 12.0,
-                        ),
-                        if (bookMarks.isNotEmpty)
-                          SizedBox(
-                            height: bookMarks.length * 48.0,
-                            child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              padding: const EdgeInsets.all(0.0),
-                              itemCount: bookMarks.length,
-                              itemBuilder: (BuildContext c, int i) {
-                                return InkWell(
-                                  onTap: () {
-                                    eventBus.fire(bookMarks[i]);
-                                    Navigator.pop(context);
-                                  },
-                                  onLongPress: () {
-                                    onLongPress(i);
-                                  },
-                                  child: MarksItem(
-                                    marksPath: bookMarks[i],
-                                  ),
-                                );
-                              },
-                            ),
+                          const SizedBox(
+                            height: 12.0,
                           ),
-                      ],
+                          if (bookMarks.isNotEmpty)
+                            SizedBox(
+                              height: bookMarks.length * 48.0,
+                              child: ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: const EdgeInsets.all(0.0),
+                                itemCount: bookMarks.length,
+                                itemBuilder: (BuildContext c, int i) {
+                                  return InkWell(
+                                    onTap: () {
+                                      eventBus.fire(bookMarks[i]);
+                                      Navigator.pop(context);
+                                    },
+                                    onLongPress: () {
+                                      onLongPress(i);
+                                    },
+                                    child: MarksItem(
+                                      marksPath: bookMarks[i],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  ))
-              // Padding(
-              //   padding: EdgeInsets.only(left: 4.0, top: 4.0),
-              //   child: Text(
-              //     '其他',
-              //     style: TextStyle(
-              //       color: Colors.grey,
-              //       fontSize: 16.0,
-              //       fontWeight: FontWeight.bold,
-              //     ),
-              //   ),
-              // ),
-              // Padding(
-              //   padding: EdgeInsets.only(left: 12.0, top: 4.0),
-              //   child: Text(
-              //     'Img镜像比较功能',
-              //     style: TextStyle(
-              //       color: Colors.black,
-              //       fontSize: 16.0,
-              //       fontWeight: FontWeight.bold,
-              //     ),
-              //   ),
-              // ),
+                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.only(left: 4.0, top: 4.0),
+                  //   child: Text(
+                  //     '其他',
+                  //     style: TextStyle(
+                  //       color: Colors.grey,
+                  //       fontSize: 16.0,
+                  //       fontWeight: FontWeight.bold,
+                  //     ),
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: EdgeInsets.only(left: 12.0, top: 4.0),
+                  //   child: Text(
+                  //     'Img镜像比较功能',
+                  //     style: TextStyle(
+                  //       color: Colors.black,
+                  //       fontSize: 16.0,
+                  //       fontWeight: FontWeight.bold,
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
+              Align(
+                alignment: const Alignment(1, 1),
+                child: Material(
+                  color: Colors.transparent,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<Setting>(
+                            builder: (_) {
+                              return Theme(
+                                data: Theme.of(context),
+                                child: Setting(),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.settings),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

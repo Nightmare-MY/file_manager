@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 
 import 'colors/file_colors.dart';
 import 'config/config.dart';
+import 'dialog/add_entity.dart';
 import 'dialog/page_choose.dart';
 import 'page/center_drawer.dart';
 import 'page/file_manager_drawer.dart';
@@ -205,7 +206,17 @@ class _FileManagerHomeState extends State<_FileManagerHome>
                 icon: const Icon(Icons.arrow_back_ios),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  showCustomDialog<void>(
+                    context: context,
+                    child: Theme(
+                      data: Theme.of(context),
+                      child: AddEntity(
+                        curDir: _paths[_commonController.page.toInt()],
+                      ),
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.add),
               ),
               IconButton(
