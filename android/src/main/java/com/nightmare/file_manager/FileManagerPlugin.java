@@ -31,6 +31,7 @@ public class FileManagerPlugin implements FlutterPlugin, MethodCallHandler {
     private MethodChannel channel;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
+
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "file_manager");
@@ -46,7 +47,7 @@ public class FileManagerPlugin implements FlutterPlugin, MethodCallHandler {
                 //重定向java的标准输入输出
                 new Thread(() -> {
                     try {
-                        String logPath=call.arguments.toString();
+                        String logPath = call.arguments.toString();
 //                        System.out.println(logPath);
                         System.setErr(new PrintStream(new FileOutputStream(new File(logPath), false), false));
                         System.setOut(new PrintStream(new FileOutputStream(new File(logPath), false), false));
@@ -54,7 +55,7 @@ public class FileManagerPlugin implements FlutterPlugin, MethodCallHandler {
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    handler.post(()-> result.success("重定向java的标准输入输出"));
+                    handler.post(() -> result.success("重定向java的标准输入输出"));
 
                 }).start();
 
@@ -76,7 +77,7 @@ public class FileManagerPlugin implements FlutterPlugin, MethodCallHandler {
                         //methodChannel.invokeMethod("Terminal", e.getMessage());
                         e.printStackTrace();
                     }
-                    handler.post(()-> result.success("123"));
+                    handler.post(() -> result.success("success"));
 
                 }).start();
                 break;
@@ -84,12 +85,22 @@ public class FileManagerPlugin implements FlutterPlugin, MethodCallHandler {
 
                 final String[] arg
                         = (String[]) ((ArrayList) call.arguments).toArray(new String[0]);
-                org.jf.smali.Main.main(arg);
+                new Thread(() -> {
+                    org.jf.smali.Main.main(arg);
+                    handler.post(() -> result.success("success"));
 
-                result.success("");
+                }).start();
+
                 break;
             case "baksmali":
-//
+                final String[] arg3
+                        = (String[]) ((ArrayList) call.arguments).toArray(new String[0]);
+                new Thread(() -> {
+                org.jf.baksmali.Main.main(arg3);
+                    handler.post(() -> result.success("success"));
+
+                }).start();
+
 //                org.jf.baksmali.Main.main(args);
 //                result.success("");
                 //String[] A = new String[]{"d", "/storage/emulated/0/Apktool/jar/1/classes.dex", "-o", "/storage/emulated/0/Apktool/jar/1/sdasd"};
