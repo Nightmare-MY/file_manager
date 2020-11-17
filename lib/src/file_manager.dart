@@ -1,25 +1,34 @@
 import 'dart:io';
 import 'dart:ui';
+
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:global_repository/global_repository.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+
 import 'colors/file_colors.dart';
 import 'config/config.dart';
+import 'dialog/page_choose.dart';
 import 'page/center_drawer.dart';
 import 'page/file_manager_drawer.dart';
 import 'page/fm_page.dart';
-import 'page_choose.dart';
 import 'provider/file_manager_notifier.dart';
 import 'utils/bookmarks.dart';
 
 Directory appDocDir;
 
+enum FileState {
+  checkWindow,
+  fileDefault,
+}
+
 class FileManager extends StatelessWidget {
+  FileManager() {
+    PlatformUtil.init();
+  }
   // static initFileManager
   static Future<String> chooseFile({@required BuildContext context}) async {
     final String documentDir = PlatformUtil.documentsDir;
@@ -68,33 +77,25 @@ class FileManager extends StatelessWidget {
           backgroundColor: Colors.white,
           accentColor: const Color(0xff213349),
           primaryColor: const Color(0xff213349),
-
-          // cursorColor: Colors.red,
-          // textSelectionColor: Colors.red,
-          // textSelectionHandleColor: Colors.red,
         ),
-        child: const FiMaHome(),
+        child: const _FileManagerHome(),
       ),
     );
   }
 }
 
-class FiMaHome extends StatefulWidget {
-  const FiMaHome({
+class _FileManagerHome extends StatefulWidget {
+  const _FileManagerHome({
     Key key,
   }) : super(key: key);
   @override
-  _FiMaHomeState createState() => _FiMaHomeState();
-}
-
-enum FileState {
-  checkWindow,
-  fileDefault,
+  _FileManagerHomeState createState() => _FileManagerHomeState();
 }
 
 EventBus eventBus = EventBus();
 
-class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
+class _FileManagerHomeState extends State<_FileManagerHome>
+    with TickerProviderStateMixin {
   List<String> _paths = <String>[];
   final PageController _pageController = PageController(); //最下面接收手势的Widget
   final PageController _commonController = PageController(
@@ -118,7 +119,6 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
     super.initState();
     initAnimation();
     initFMPage();
-    temp();
   }
 
   @override
@@ -136,7 +136,7 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
 
   void _onAfterRendering(Duration timeStamp) {
     //页面构建完成后悔拿到context
-    setState(() {});
+    // setState(() {});
   }
 
   @override
@@ -161,7 +161,7 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
                         size: 16.0,
                       )
                     else
-                      buildStack(context),
+                      buildBody(context),
                     // 最下面的透明的 widget
                     Align(
                       alignment: Alignment.bottomCenter,
@@ -195,16 +195,28 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  final int curPage = _commonController.page.toInt();
+                  if (curPage == 0) {
+                    return;
+                  }
+                  changePage(curPage - 1);
+                },
+                icon: const Icon(Icons.arrow_back_ios),
               ),
               IconButton(
                 onPressed: () {},
-                icon: Icon(Icons.add),
+                icon: const Icon(Icons.add),
               ),
               IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.arrow_forward_ios),
+                onPressed: () {
+                  final int curPage = _commonController.page.toInt();
+                  if (curPage == _paths.length - 1) {
+                    return;
+                  }
+                  changePage(curPage + 1);
+                },
+                icon: const Icon(Icons.arrow_forward_ios),
               ),
             ],
           ),
@@ -286,7 +298,7 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
     );
   }
 
-  Stack buildStack(BuildContext context) {
+  Stack buildBody(BuildContext context) {
     return Stack(
       alignment: Alignment.topCenter,
       children: <Widget>[
@@ -341,13 +353,6 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
         CenterDrawer(),
       ],
     );
-  }
-
-  void temp() {
-    ProcessResult result = Process.runSync('ls', ['/storage/emulated/0/DCIM']);
-    print(result.stdout);
-    print(result.stderr);
-    print('object');
   }
 
   void initAnimation() {
@@ -431,8 +436,18 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
             }
             done
             exit''');
-      File('${Config.binPath}/smali')
-          .writeAsStringSync('echo -n smaliFunc \"\$@\"');
+      File('${Config.binPath}/smali').writeAsStringSync(
+          '''mkfifo /data/data/${Config.packageName}/files/Apktool/apktool_lock >/dev/null 2>&1
+            echo -n smaliFunc "\$@"
+            {
+              cat /data/data/${Config.packageName}/files/Apktool/apktool_lock
+            } &
+            while [ -p /data/data/${Config.packageName}/files/Apktool/apktool_lock ]
+            do {
+              sleep 0.5
+            }
+            done
+            exit''');
       NiProcess.exec(
         'chmod 777 ${Config.binPath}/apktool\n'
         'chmod 777 ${Config.binPath}/baksmali\n'
@@ -457,7 +472,7 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
       if (Platform.isAndroid)
         temp = '/storage/emulated/0';
       else {
-        temp = await PlatformUtil.documentsDir;
+        temp = PlatformUtil.documentsDir;
       }
     }
     _paths = temp.trim().split('\n');
@@ -490,9 +505,13 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
   }
 
   void setStatePathFile() {
-    // if (Platform.isAndroid)
-    //   File('${Config.filesPath}/FileManager/History_Path')
-    //       .writeAsString(_paths.join('\n'));
+    /// 在新建页面删除页面的时候会用到
+    /// 页面初始打开会读取这个文件生成页面
+    if (Platform.isAndroid) {
+      File('${Config.filesPath}/FileManager/History_Path').writeAsString(
+        _paths.join('\n'),
+      );
+    }
   }
 
   PreferredSize buildAppBar(BuildContext context) {
@@ -644,7 +663,9 @@ class _FiMaHomeState extends State<FiMaHome> with TickerProviderStateMixin {
                           deletePageCall: deletePage,
                           addNewPageCall: () async {
                             Navigator.of(context).pop();
-                            addNewPage(await PlatformUtil.documentsDir);
+                            print(
+                                'PlatformUtil.documentsDir->${PlatformUtil.documentsDir}');
+                            addNewPage(PlatformUtil.documentsDir);
                           },
                         ),
                       );
