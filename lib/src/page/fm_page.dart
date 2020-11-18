@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:file_manager/src/dialog/apktool_decode_page.dart';
 import 'package:file_manager/src/dialog/long_press.dart';
 import 'package:file_manager/src/widgets/item_imgheader.dart';
 import 'package:flutter_svg/svg.dart';
