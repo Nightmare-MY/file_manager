@@ -39,7 +39,7 @@ class NiDirectory extends FileEntity {
   }
 
   Future<List<FileEntity>> listAndSort({
-    bool verbose = false,
+    bool verbose = true,
   }) async {
     // if (Platform.isWindows) {
     //   return await listAndSortForWin();
@@ -60,7 +60,7 @@ class NiDirectory extends FileEntity {
     path = path.replaceAll('//', '/');
     // print('刷新的路径=====>>$path');
     final String lsOut = await NiProcess.exec(
-      "$lsPath -aog '${PlatformUtil.getUnixPath(path)}'\n",
+      '$lsPath -aog "${PlatformUtil.getUnixPath(path)}"\n',
     );
     if (verbose) {
       print('lsOut===>$lsOut');
@@ -91,7 +91,7 @@ class NiDirectory extends FileEntity {
       // 当当前文件夹存在包含符号链接的节点时
       //-g取消打印owner  -0取消打印group   -L不跟随符号链接，会指向整个符号链接最后指向的那个
       final String lsOut = await NiProcess.exec(
-        "echo '$linkFileNode'|xargs $lsPath -ALdog\n",
+        'echo "$linkFileNode"|xargs $lsPath -ALdog\n',
       );
       final List<String> linkFileNodes =
           lsOut.replaceAll('//', '/').split('\n');
@@ -105,13 +105,12 @@ class NiDirectory extends FileEntity {
       final Map<String, String> map = <String, String>{};
       for (final String str in linkFileNodes) {
         // print(str);
-        final String key = PlatformUtil.getFileName(
-          str.replaceAll(RegExp('.*[0-9] '), ''),
-        );
+        final String key = str.replaceAll(RegExp('^.*[0-9] /'), '/');
+        print('key->$key');
         map[key] = str.substring(0, 1);
       }
       if (verbose) {
-        // print('====>$map');
+        print('====>$map');
       }
       for (int i = 0; i < _fullmessage.length; i++) {
         final String linkFromFile = _fullmessage[i].split(' -> ').last;
@@ -119,8 +118,9 @@ class NiDirectory extends FileEntity {
         if (verbose) {
           print('linkFromFile====>$linkFromFile');
         }
-        if (_fullmessage[i].trim().startsWith('l') &&
-            map.keys.contains(linkFromFile)) {
+        print('map.keys->${map.keys}');
+        print('map.keys->${map.keys.contains(linkFromFile)}');
+        if (map.keys.contains(linkFromFile)) {
           _fullmessage[i] = _fullmessage[i].replaceAll(
               RegExp('^l'), map[_fullmessage[i].split(' -> ').last]);
           // f.remove(f.first);r
