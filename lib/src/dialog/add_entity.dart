@@ -6,6 +6,7 @@ enum FileType {
   directory,
 }
 
+// create file or directory page
 class AddEntity extends StatefulWidget {
   const AddEntity({Key key, this.curDir}) : super(key: key);
   final String curDir;
