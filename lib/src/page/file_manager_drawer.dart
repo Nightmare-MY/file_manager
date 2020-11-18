@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:global_repository/global_repository.dart';
 import 'package:flutter/material.dart';
@@ -204,7 +202,7 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
                           ),
                           InkWell(
                             onTap: () async {
-                              eventBus.fire(await PlatformUtil.documentsDir);
+                              eventBus.fire(PlatformUtil.documentsDir);
                               Navigator.pop(context);
                             },
                             child: SizedBox(
