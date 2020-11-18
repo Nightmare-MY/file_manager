@@ -22,7 +22,7 @@ dependencies:
   # 事件总线
   event_bus: ^1.1.0
   # svg图像
-  flutter_svg: ^0.17.4
+  flutter_svg: ^0.19.1
 
 dev_dependencies:
   flutter_test:
