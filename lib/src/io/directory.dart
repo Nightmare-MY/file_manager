@@ -63,7 +63,11 @@ class NiDirectory extends FileEntity {
       '$lsPath -aog "${PlatformUtil.getUnixPath(path)}"\n',
     );
     if (verbose) {
-      print('lsOut===>$lsOut');
+      PrintUtil.printn('--------- lsOut ------------', 31, 47);
+      lsOut.split('\n').forEach((element) {
+        PrintUtil.printn(element, 31, 47);
+      });
+      PrintUtil.printn('--------- lsOut ------------', 31, 47);
     }
     // 删除第一行 -> total xxx
     _fullmessage = lsOut.split('\n')..removeAt(0);
@@ -84,7 +88,11 @@ class NiDirectory extends FileEntity {
       }
     }
     if (verbose) {
-      print('linkFileNode\n>>>>>>>>>\n$linkFileNode\n<<<<<<<<<');
+      PrintUtil.printn('------------ linkFileNode ------------', 35, 47);
+      linkFileNode.split('\n').forEach((element) {
+        PrintUtil.printn(element, 35, 47);
+      });
+      PrintUtil.printn('------------ linkFileNode ------------', 35, 47);
     }
     //
     if (linkFileNode.isNotEmpty) {
@@ -149,7 +157,6 @@ class NiDirectory extends FileEntity {
     }
     // ls 命令输出有空格上的对齐，不能用 list.split 然后以多个空格分开的方式来解析数据
     // 因为有的文件(夹)存在空格
-    print(_fullmessage);
     if (_fullmessage.isNotEmpty) {
       _startIndex = _fullmessage.first.indexOf(
         RegExp(':[0-9][0-9] '),
@@ -164,10 +171,14 @@ class NiDirectory extends FileEntity {
           FileEntity fileEntity;
           if (_fullmessage[i].startsWith(RegExp('-|l'))) {
             fileEntity = NiFile(
-                path + _fullmessage[i].substring(_startIndex), _fullmessage[i]);
+              path + _fullmessage[i].substring(_startIndex),
+              _fullmessage[i],
+            );
           } else {
             fileEntity = NiDirectory.initWithFullInfo(
-                path + _fullmessage[i].substring(_startIndex), _fullmessage[i]);
+              path + _fullmessage[i].substring(_startIndex),
+              _fullmessage[i],
+            );
           }
           _fileNodes.add(fileEntity);
         }
@@ -205,5 +216,10 @@ class NiDirectory extends FileEntity {
       return -1;
     }
     return a.path.toLowerCase().compareTo(b.path.toLowerCase());
+  }
+
+  @override
+  String toString() {
+    return 'path:$path';
   }
 }
