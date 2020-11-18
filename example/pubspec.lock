@@ -56,7 +56,7 @@ packages:
       name: cupertino_icons
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.1+1"
   draggable_scrollbar:
     dependency: transitive
     description:
@@ -128,7 +128,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: cd64aae9567aaca102cc81451437fd76ac7bf032
+      resolved-ref: f0453f6a5f8f9c7f62de9c0c155e7537b41a29de
       url: "https://github.com/nightmare-space/global_repository"
     source: git
     version: "0.0.1"
