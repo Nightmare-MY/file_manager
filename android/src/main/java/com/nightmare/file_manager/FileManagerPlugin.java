@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.security.Permission;
 import java.util.ArrayList;
 
 import brut.common.BrutException;
@@ -38,7 +39,6 @@ public class FileManagerPlugin implements FlutterPlugin, MethodCallHandler {
 
         channel.setMethodCallHandler(this);
     }
-
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         String id = call.method;
@@ -51,6 +51,7 @@ public class FileManagerPlugin implements FlutterPlugin, MethodCallHandler {
 //                        System.out.println(logPath);
                         System.setErr(new PrintStream(new FileOutputStream(new File(logPath), false), false));
                         System.setOut(new PrintStream(new FileOutputStream(new File(logPath), false), false));
+
 //                        System.out.println("重定向java的标准输入输出结束");
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
