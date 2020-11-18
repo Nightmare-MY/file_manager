@@ -11,6 +11,7 @@ import 'package:file_manager/src/io/file.dart';
 import 'package:file_manager/src/io/file_entity.dart';
 import 'package:file_manager/src/provider/file_manager_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../file_manager.dart';
 import 'text_edit.dart';
 import 'widget/file_item_suffix.dart';
@@ -243,6 +244,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
             fileNode: fileNode,
             initpage0: initpage0,
             initpage1: initpage1,
+            fiMaPageNotifier: Provider.of(context),
             callback: () async {
               _getFileNodes(
                 _currentdirectory,
@@ -468,7 +470,8 @@ class _FileItemState extends State<FileItem>
   FiMaPageNotifier fiMaPageNotifier;
   @override
   Widget build(BuildContext context) {
-    // print(fiMaPageNotifier.checkNodes);
+    fiMaPageNotifier = Provider.of(context);
+    PrintUtil.printn(fiMaPageNotifier.checkNodes, 32);
     final List<String> _tmp = widget.fileNode.path.split(' -> '); //有的有符号链接
     final String currentFileName =
         _tmp.first.split('/').last.toString(); //取前面那个就没错
@@ -482,10 +485,10 @@ class _FileItemState extends State<FileItem>
       height: 54,
       child: Stack(
         children: <Widget>[
-          // if (fiMaPageNotifier.checkNodes.contains(widget.fileNode))
-          //   Container(
-          //     color: Colors.grey.withOpacity(0.6),
-          //   ),
+          if (fiMaPageNotifier.checkNodes.contains(widget.fileNode))
+            Container(
+              color: Colors.grey.withOpacity(0.6),
+            ),
           InkWell(
             splashColor: Colors.transparent,
             onLongPress: () => widget.onLongPress(),
@@ -504,9 +507,9 @@ class _FileItemState extends State<FileItem>
             },
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              // onHorizontalDragStart: _handleDragStart,
-              // onHorizontalDragUpdate: _handleDragUpdate,
-              // onHorizontalDragEnd: _handleDragEnd,
+              onHorizontalDragStart: _handleDragStart,
+              onHorizontalDragUpdate: _handleDragUpdate,
+              onHorizontalDragEnd: _handleDragEnd,
               child: Transform(
                 transform: Matrix4.identity()..translate(dx),
                 child: Padding(
