@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_manager/src/io/file_entity.dart';
+import 'package:file_manager/src/provider/file_manager_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -11,14 +12,20 @@ import 'package:provider/provider.dart';
 import '../colors/file_colors.dart';
 
 class LongPressDialog extends StatefulWidget {
-  const LongPressDialog(
-      {Key key, this.initpage0, this.initpage1, this.callback, this.fileNode})
-      : super(key: key);
+  const LongPressDialog({
+    Key key,
+    this.initpage0,
+    this.initpage1,
+    this.callback,
+    this.fileNode,
+    this.fiMaPageNotifier,
+  }) : super(key: key);
 
   final FileEntity fileNode;
   final int initpage0; //显示特殊列表还是普通
   final int initpage1; //显示特殊列表中的某一个
   final void Function() callback;
+  final FiMaPageNotifier fiMaPageNotifier;
 
   @override
   _LongPressDialogState createState() => _LongPressDialogState();
@@ -150,70 +157,69 @@ class _LongPressDialogState extends State<LongPressDialog> {
   }
 
   Widget deleteWidget() {
-    // final FiMaPageNotifier fiMaPageNotifier =
-    //     Provider.of<FiMaPageNotifier>(context);
-    // List<FileEntity> _nodes = fiMaPageNotifier.checkNodes;
-    // if (_nodes.isEmpty) {
-    //   _nodes = <FileEntity>[widget.fileNode];
-    // }
-    // return FullHeightListView(
-    //   child: Column(
-    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     children: <Widget>[
-    //       Row(
-    //         children: <Widget>[
-    //           Padding(
-    //             padding: const EdgeInsets.only(left: 4.0, right: 4.0),
-    //             child: SvgPicture.asset(
-    //               'assets/icon/alert.svg',
-    //               width: 20.0,
-    //               height: 20.0,
-    //               color: Theme.of(context).iconTheme.color,
-    //             ),
-    //           ),
-    //           Text(
-    //             '删除文件${widget.fileNode.nodeName}？',
-    //             style: const TextStyle(
-    //               color: Color(0xff000000),
-    //               fontSize: 16.0,
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //       Material(
-    //         color: Colors.white,
-    //         child: Ink(
-    //           child: Row(
-    //             mainAxisAlignment: MainAxisAlignment.end,
-    //             children: <Widget>[
-    //               FlatButton(
-    //                 child: const Text('返回'),
-    //                 onPressed: () {
-    //                   dialogeventBus.fire(Height(440));
-    //                   widgetKey = 'defaultWidget';
-    //                   setState(() {});
-    //                 },
-    //               ),
-    //               FlatButton(
-    //                 child: const Text('确认'),
-    //                 onPressed: () async {
-    //                   // await execShell(ToolkitInfo.isRoot,
-    //                   //     '/system/bin/find '${widget.fileNode.path}'');
-    //                   for (final FileEntity node in _nodes) {
-    //                     await NiProcess.exec('rm -rf ${node.path}\n');
-    //                   }
-    //                   // showToast2('已删除');
-    //                   widget.callback();
-    //                   Navigator.of(context).pop();
-    //                 },
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-    //       )
-    //     ],
-    //   ),
-    // );
+    final FiMaPageNotifier fiMaPageNotifier = widget.fiMaPageNotifier;
+    List<FileEntity> _nodes = fiMaPageNotifier.checkNodes;
+    if (_nodes.isEmpty) {
+      _nodes = <FileEntity>[widget.fileNode];
+    }
+    return FullHeightListView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+                child: SvgPicture.asset(
+                  'assets/icon/alert.svg',
+                  width: 20.0,
+                  height: 20.0,
+                  color: Theme.of(context).iconTheme.color,
+                ),
+              ),
+              Text(
+                '删除文件${widget.fileNode.nodeName}？',
+                style: const TextStyle(
+                  color: Color(0xff000000),
+                  fontSize: 16.0,
+                ),
+              ),
+            ],
+          ),
+          Material(
+            color: Colors.white,
+            child: Ink(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  FlatButton(
+                    child: const Text('返回'),
+                    onPressed: () {
+                      dialogeventBus.fire(Height(440));
+                      widgetKey = 'defaultWidget';
+                      setState(() {});
+                    },
+                  ),
+                  FlatButton(
+                    child: const Text('确认'),
+                    onPressed: () async {
+                      // await execShell(ToolkitInfo.isRoot,
+                      //     '/system/bin/find '${widget.fileNode.path}'');
+                      for (final FileEntity node in _nodes) {
+                        await NiProcess.exec('rm -rf ${node.path}\n');
+                      }
+                      // showToast2('已删除');
+                      widget.callback();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Widget renameWidget() {
