@@ -28,10 +28,11 @@ class AddFileNode extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             FlatButton(
-                onPressed: () {
-                  // Navigator.pop(globalContext);
-                },
-                child: const Text('取消')),
+              onPressed: () {
+                // Navigator.pop(globalContext);
+              },
+              child: const Text('取消'),
+            ),
             FlatButton(
                 onPressed: () async {
                   if (isAddFile)
