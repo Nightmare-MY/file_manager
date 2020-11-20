@@ -37,16 +37,23 @@ class FileManager extends StatelessWidget {
       MaterialPageRoute(
         builder: (_) {
           // SafeArea;
-          return Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              title: const Text('选择文件'),
-            ),
-            body: Theme(
-              data: Theme.of(context),
-              child: FMPage(
-                chooseFile: true,
-                initpath: '$documentDir/YanTool/Rom',
+          return MultiProvider(
+            providers: <SingleChildCloneableWidget>[
+              ChangeNotifierProvider<FiMaPageNotifier>(
+                create: (_) => FiMaPageNotifier(),
+              ),
+            ],
+            child: Scaffold(
+              appBar: AppBar(
+                centerTitle: true,
+                title: const Text('选择文件'),
+              ),
+              body: Theme(
+                data: Theme.of(context),
+                child: FMPage(
+                  chooseFile: true,
+                  initpath: '$documentDir/YanTool/Rom',
+                ),
               ),
             ),
           );
