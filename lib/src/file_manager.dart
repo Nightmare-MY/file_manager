@@ -32,6 +32,7 @@ class FileManager extends StatelessWidget {
   }
   // static initFileManager
   static Future<String> chooseFile({@required BuildContext context}) async {
+    await PlatformUtil.init();
     final String documentDir = PlatformUtil.documentsDir;
     return await Navigator.of(context).push(
       MaterialPageRoute(
@@ -768,7 +769,8 @@ class _FileManagerHomeState extends State<_FileManagerHome>
                           // showToast2('已添加');
                         }
                         if (choose == 3) {
-                          SystemNavigator.pop(animated: false);
+                          Navigator.pop(context);
+                          // SystemNavigator.pop(animated: false);
                         }
                         // PlatformChannel.Drawer.invokeMethod<void>('Exit');
                       }
