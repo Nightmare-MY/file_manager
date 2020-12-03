@@ -117,7 +117,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
       }
     });
     _currentdirectory = widget.initpath ?? await PlatformUtil.documentsDir;
-    print(_currentdirectory);
+    print('_currentdirectory->$_currentdirectory');
     _getFileNodes(_currentdirectory);
   }
 
@@ -278,6 +278,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
   }
 
   Future<bool> onWillPop() async {
+    print('拦截');
     // fiMaPageNotifier.removeAllCheck();
     //触发
     if (Scaffold.of(context).isDrawerOpen) {
@@ -289,6 +290,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
     }
     if (_currentdirectory == '/') {
       if (!widget.chooseFile) {
+        Navigator.pop(context);
         // PlatformChannel.Drawer.invokeMethod<void>('Exit');
       }
     }
@@ -525,9 +527,7 @@ class _FileItemState extends State<FileItem>
                             height: 30,
                             child: _iconData,
                           ),
-                          SingleChildScrollView(
-                            // physics: ,
-                            scrollDirection: Axis.horizontal,
+                          Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.center,
