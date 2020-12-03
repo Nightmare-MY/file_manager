@@ -27,11 +27,11 @@ class _ItemImgHeaderState extends State<ItemImgHeader> {
   }
 
   Future<void> init() async {
-    if (!await Directory('${Config.filesPath}/FileManager/img_cache')
-        .exists()) {
-      Directory('${Config.filesPath}/FileManager/img_cache')
-          .createSync(recursive: true);
-    }
+    // if (!await Directory('${Config.filesPath}/FileManager/img_cache')
+    //     .exists()) {
+    //   Directory('${Config.filesPath}/FileManager/img_cache')
+    //       .createSync(recursive: true);
+    // }
     final String cacheName = widget.fileNode.path.replaceAll('/', '_');
     final bool cacheExist =
         await File('${Config.filesPath}/FileManager/img_cache/$cacheName')
@@ -45,15 +45,15 @@ class _ItemImgHeaderState extends State<ItemImgHeader> {
       imgPath = widget.fileNode.path;
       prepare = true;
       setState(() {});
-      saveCacheImg();
+      // saveCacheImg();
     }
   }
 
   void saveCacheImg() {
     final String cacheName = widget.fileNode.path.replaceAll('/', '_');
     Future<void>.delayed(const Duration(milliseconds: 300), () async {
-      final Uint8List _aa = await _capturePng(rootWidgetKey);
-      if (_aa == null) {
+      final Uint8List uint8list = await _capturePng(rootWidgetKey);
+      if (uint8list == null) {
         imgPath = widget.fileNode.path;
         prepare = true;
         setState(() {});
@@ -61,7 +61,7 @@ class _ItemImgHeaderState extends State<ItemImgHeader> {
         return;
       }
       File('${Config.filesPath}/FileManager/img_cache/$cacheName')
-          .writeAsBytesSync(_aa);
+          .writeAsBytesSync(uint8list);
     });
   }
 
