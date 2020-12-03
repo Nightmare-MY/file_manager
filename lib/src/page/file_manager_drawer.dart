@@ -38,7 +38,11 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    final String result = await NiProcess.exec('df -k');
+    print(await NiProcess.exec('id'));
+    final String result = await NiProcess.exec('/system/bin/df -k');
+    for (final String line in result.split('\n')) {
+      print('line -> $line');
+    }
     final List<String> infos = result.split('\n');
     for (final String line in infos) {
       if (line.endsWith('/data')) {
@@ -71,7 +75,6 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
 
     controller.forward();
     setState(() {});
-    print(result);
   }
 
   Future<void> initBookMarks() async {
@@ -81,7 +84,7 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
 
   @override
   Widget build(BuildContext context) {
-    if (rootInfo.isEmpty | sdcardInfo.isEmpty) {
+    if (rootInfo.isEmpty) {
       return const SpinKitThreeBounce(
         color: FileColors.fileAppColor,
         size: 16.0,
@@ -200,70 +203,75 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
                               ),
                             ),
                           ),
-                          InkWell(
-                            onTap: () async {
-                              eventBus.fire(PlatformUtil.documentsDir);
-                              Navigator.pop(context);
-                            },
-                            child: SizedBox(
-                              height: 48.0,
-                              width: MediaQuery.of(context).size.width,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        const Text(
-                                          '外部储存',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
+                          if (sdcardInfo.isNotEmpty)
+                            InkWell(
+                              onTap: () async {
+                                // TODO 垃圾代码
+
+                                eventBus.fire(PlatformUtil.documentsDir);
+                                Navigator.pop(context);
+                              },
+                              child: SizedBox(
+                                height: 48.0,
+                                width: MediaQuery.of(context).size.width,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          const Text(
+                                            '外部储存',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                        ),
-                                        if (sdcardInfo.isNotEmpty)
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Text(sdcardInfo[0]),
-                                              Text(
-                                                  '${FileSizeUtils.getFileSizeFromStr('${int.parse(sdcardInfo[2]) * 1024}')}/ ${FileSizeUtils.getFileSizeFromStr('${int.parse(sdcardInfo[1]) * 1024}')}')
-                                            ],
-                                          )
-                                        else
-                                          const SizedBox(),
-                                        AnimatedBuilder(
-                                          animation: controller,
-                                          builder: (BuildContext context,
-                                              Widget child) {
-                                            return ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                              child: LinearProgressIndicator(
-                                                backgroundColor: Colors.grey,
-                                                value: sdcardAnima.value,
-                                                valueColor:
-                                                    AlwaysStoppedAnimation(
-                                                  Theme.of(context).accentColor,
+                                          if (sdcardInfo.isNotEmpty)
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Text(sdcardInfo[0]),
+                                                Text(
+                                                    '${FileSizeUtils.getFileSizeFromStr('${int.parse(sdcardInfo[2]) * 1024}')}/ ${FileSizeUtils.getFileSizeFromStr('${int.parse(sdcardInfo[1]) * 1024}')}')
+                                              ],
+                                            )
+                                          else
+                                            const SizedBox(),
+                                          AnimatedBuilder(
+                                            animation: controller,
+                                            builder: (BuildContext context,
+                                                Widget child) {
+                                              return ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                                child: LinearProgressIndicator(
+                                                  backgroundColor: Colors.grey,
+                                                  value: sdcardAnima.value,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation(
+                                                    Theme.of(context)
+                                                        .accentColor,
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ],
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
                           const Padding(
                             padding: EdgeInsets.only(left: 4.0, top: 4.0),
                             child: Text(
