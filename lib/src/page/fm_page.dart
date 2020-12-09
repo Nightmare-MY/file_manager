@@ -224,7 +224,14 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
   }
 
   void itemOnLongPress(
-      String currentFile, FileEntity fileNode, BuildContext context) {
+    String currentFile,
+    FileEntity fileNode,
+    BuildContext context,
+  ) {
+    if (widget.chooseFile) {
+      NiToast.showToast('点击文件即可选择');
+      return;
+    }
     if (currentFile != '..') {
       int initpage0 = 0;
       int initpage1 = 0;
