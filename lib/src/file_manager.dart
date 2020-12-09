@@ -35,6 +35,7 @@ class FileManager extends StatelessWidget {
     @required BuildContext context,
     String pickPath,
   }) async {
+    NiToast.initContext(context);
     await PlatformUtil.init();
     final String documentDir = PlatformUtil.documentsDir;
     return await Navigator.of(context).push(
@@ -47,14 +48,14 @@ class FileManager extends StatelessWidget {
                 create: (_) => FiMaPageNotifier(),
               ),
             ],
-            child: Scaffold(
-              appBar: AppBar(
-                centerTitle: true,
-                title: const Text('选择文件'),
-              ),
-              body: Theme(
-                data: Theme.of(context),
-                child: FMPage(
+            child: Theme(
+              data: Theme.of(context),
+              child: Scaffold(
+                appBar: AppBar(
+                  centerTitle: true,
+                  title: const Text('选择文件'),
+                ),
+                body: FMPage(
                   chooseFile: true,
                   initpath: pickPath ?? '$documentDir/YanTool/Rom',
                 ),
