@@ -1,12 +1,17 @@
 import 'dart:io';
 import 'package:file_manager/src/config/config.dart';
 import 'package:file_manager/src/io/file.dart';
+import 'package:file_manager/src/utils/client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:global_repository/global_repository.dart';
 
 class ApktoolDecodeAll extends StatefulWidget {
-  const ApktoolDecodeAll({Key key, this.fileNode, this.cmd}) : super(key: key);
+  const ApktoolDecodeAll({
+    Key key,
+    this.fileNode,
+    this.cmd,
+  }) : super(key: key);
   final NiFile fileNode;
   final String cmd;
 
@@ -55,6 +60,8 @@ class _ApktoolDecodeAllState extends State<ApktoolDecodeAll> {
   Future<void> exec() async {
     //
     print('自动执行');
+    NetworkManager.startServer();
+    return;
     const MethodChannel _channel = MethodChannel('file_manager');
     final String logpath =
         '/data/data/${Config.packageName}/files/Apktool/apktool_pipe';
