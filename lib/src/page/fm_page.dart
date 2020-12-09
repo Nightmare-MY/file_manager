@@ -229,7 +229,7 @@ class _FMPageState extends State<FMPage> with TickerProviderStateMixin {
     BuildContext context,
   ) {
     if (widget.chooseFile) {
-      NiToast.showToast('点击文件即可选择');
+      NiToast.showToast('点击文件或者文件夹即可选择');
       return;
     }
     if (currentFile != '..') {
