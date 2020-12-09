@@ -31,7 +31,10 @@ class FileManager extends StatelessWidget {
     PlatformUtil.init();
   }
   // static initFileManager
-  static Future<String> chooseFile({@required BuildContext context}) async {
+  static Future<String> chooseFile({
+    @required BuildContext context,
+    String pickPath,
+  }) async {
     await PlatformUtil.init();
     final String documentDir = PlatformUtil.documentsDir;
     return await Navigator.of(context).push(
@@ -53,7 +56,7 @@ class FileManager extends StatelessWidget {
                 data: Theme.of(context),
                 child: FMPage(
                   chooseFile: true,
-                  initpath: '$documentDir/YanTool/Rom',
+                  initpath: pickPath ?? '$documentDir/YanTool/Rom',
                 ),
               ),
             ),

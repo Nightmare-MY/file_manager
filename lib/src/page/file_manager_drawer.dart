@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:global_repository/global_repository.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +41,8 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
       duration: const Duration(milliseconds: 600),
     );
     print(await NiProcess.exec('id'));
-    final String result = await NiProcess.exec('/system/bin/df -k');
+
+    final String result = await NiProcess.exec('df -k');
     for (final String line in result.split('\n')) {
       print('line -> $line');
     }
@@ -84,7 +87,7 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
 
   @override
   Widget build(BuildContext context) {
-    if (rootInfo.isEmpty) {
+    if (rootInfo.isEmpty && Platform.isAndroid) {
       return const SpinKitThreeBounce(
         color: FileColors.fileAppColor,
         size: 16.0,
@@ -207,7 +210,6 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
                             InkWell(
                               onTap: () async {
                                 // TODO 垃圾代码
-
                                 eventBus.fire(PlatformUtil.documentsDir);
                                 Navigator.pop(context);
                               },
