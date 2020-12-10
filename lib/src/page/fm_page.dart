@@ -478,7 +478,7 @@ class _FileItemState extends State<FileItem>
   FiMaPageNotifier fiMaPageNotifier;
   @override
   Widget build(BuildContext context) {
-    fiMaPageNotifier = Provider.of(context);
+    fiMaPageNotifier = FiMaPageNotifier();
     PrintUtil.printn(fiMaPageNotifier.checkNodes, 32);
     final List<String> _tmp = widget.fileNode.path.split(' -> '); //有的有符号链接
     final String currentFileName =

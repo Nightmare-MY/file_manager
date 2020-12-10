@@ -538,8 +538,7 @@ class _FileManagerHomeState extends State<_FileManagerHome>
   }
 
   PreferredSize buildAppBar(BuildContext context) {
-    final FiMaPageNotifier fiMaPageNotifier =
-        Provider.of<FiMaPageNotifier>(context);
+    final FiMaPageNotifier fiMaPageNotifier = FiMaPageNotifier();
     if (fiMaPageNotifier.clipboard.isNotEmpty &&
         pastIconAnimaController.isDismissed)
       pastIconAnimaController.forward();
@@ -666,8 +665,8 @@ class _FileManagerHomeState extends State<_FileManagerHome>
               child: InkWell(
                 borderRadius: BorderRadius.circular(8.0),
                 onTap: () {
+                  // return;
                   showDialog<void>(
-                    useRootNavigator: false,
                     context: context,
                     builder: (_) {
                       return Theme(

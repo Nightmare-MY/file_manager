@@ -7,6 +7,15 @@ enum ClipType {
 }
 
 class FiMaPageNotifier extends ChangeNotifier {
+  // 工厂模式
+  factory FiMaPageNotifier() => _getInstance();
+  static FiMaPageNotifier _getInstance() {
+    _instance ??= FiMaPageNotifier._internal();
+    return _instance;
+  }
+
+  FiMaPageNotifier._internal() {}
+  static FiMaPageNotifier _instance;
   List<FileEntity> checkNodes = <FileEntity>[];
   final List<String> _clipboard = <String>[];
   ClipType _clipType;
