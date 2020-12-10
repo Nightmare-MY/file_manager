@@ -1,3 +1,4 @@
+import 'package:file_manager/src/provider/file_manager_notifier.dart';
 import 'package:global_repository/global_repository.dart';
 
 class Config {
@@ -13,4 +14,5 @@ class Config {
   static String filesPath = '/data/data/$packageName/files';
   static String appName = 'YanTool';
   static String dataPath = '/data/data/$packageName';
+  static FiMaPageNotifier fiMaPageNotifier;
 }

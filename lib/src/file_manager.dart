@@ -539,6 +539,8 @@ class _FileManagerHomeState extends State<_FileManagerHome>
 
   PreferredSize buildAppBar(BuildContext context) {
     final FiMaPageNotifier fiMaPageNotifier = FiMaPageNotifier();
+    // fiMaPageNotifier=
+    fiMaPageNotifier.dispose();
     if (fiMaPageNotifier.clipboard.isNotEmpty &&
         pastIconAnimaController.isDismissed)
       pastIconAnimaController.forward();
