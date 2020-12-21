@@ -10,7 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.security.Permission;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 
 import brut.common.BrutException;
@@ -19,7 +20,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /**
  * FileManagerPlugin
@@ -39,24 +39,49 @@ public class FileManagerPlugin implements FlutterPlugin, MethodCallHandler {
 
         channel.setMethodCallHandler(this);
     }
+    private static Socket connect() throws IOException {
+        Socket socket = new Socket();
+        socket.connect(new InetSocketAddress("localhost", 4041));
+        return socket;
+    }
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         String id = call.method;
         switch (id) {
+            case "logoutToSocket":
+                //重定向java的标准输入输出
+                new Thread(() -> {
+                    try {
+                        Socket apktoolSocket;
+                        apktoolSocket=connect();
+                        System.setErr(new PrintStream(apktoolSocket.getOutputStream(), false));
+                        System.setOut(new PrintStream(apktoolSocket.getOutputStream(), false));
+//                        fileOutputStream.
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    handler.post(() -> result.success("重定向java的标准输入输出到套接字回调"));
+
+                }).start();
+
+                break;
             case "logout":
                 //重定向java的标准输入输出
                 new Thread(() -> {
                     try {
                         String logPath = call.arguments.toString();
-//                        System.out.println(logPath);
-                        System.setErr(new PrintStream(new FileOutputStream(new File(logPath), false), false));
-                        System.setOut(new PrintStream(new FileOutputStream(new File(logPath), false), false));
 
-//                        System.out.println("重定向java的标准输入输出结束");
+                        FileOutputStream fileOutputStream = new FileOutputStream(new File(logPath), false);
+                        System.setErr(new PrintStream(fileOutputStream, false));
+                        System.setOut(new PrintStream(fileOutputStream, false));
+//                        fileOutputStream.
+                        System.out.println("重定向java的标准输出到文件");
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    handler.post(() -> result.success("重定向java的标准输入输出"));
+                    handler.post(() -> result.success("重定向java的标准输入输出到文件回调"));
 
                 }).start();
 
@@ -97,7 +122,7 @@ public class FileManagerPlugin implements FlutterPlugin, MethodCallHandler {
                 final String[] arg3
                         = (String[]) ((ArrayList) call.arguments).toArray(new String[0]);
                 new Thread(() -> {
-                org.jf.baksmali.Main.main(arg3);
+                    org.jf.baksmali.Main.main(arg3);
                     handler.post(() -> result.success("success"));
 
                 }).start();
