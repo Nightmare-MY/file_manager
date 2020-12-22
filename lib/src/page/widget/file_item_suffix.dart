@@ -1,4 +1,6 @@
-import 'package:file_manager/src/dialog/apktool_decode_page.dart';
+import 'package:file_manager/src/dialog/apktool_dialog.dart';
+import 'package:file_manager/src/dialog/apktool_encode_dialog.dart';
+import 'package:file_manager/src/io/directory.dart';
 import 'package:file_manager/src/io/file.dart';
 import 'package:file_manager/src/io/file_entity.dart';
 import 'package:flutter/material.dart';
@@ -17,15 +19,13 @@ class FileItemSuffix extends StatelessWidget {
         child: IconButton(
           icon: const Icon(Icons.build),
           onPressed: () {
-            // showCustomDialog2<void>(
-            //   isPadding: false,
-            //   context: context,
-            //   duration: const Duration(milliseconds: 200),
-            //   child: FullHeightListView(
-            //     child: ApkToolEncode(
-            //         fileNode: widget.fileNode as NiFile),
-            //   ),
-            // );
+            showCustomDialog<void>(
+              context: context,
+              duration: const Duration(milliseconds: 200),
+              child: ApktoolEncodeDialog(
+                directory: fileNode as NiDirectory,
+              ),
+            );
           },
         ),
       );
