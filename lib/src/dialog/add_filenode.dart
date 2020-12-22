@@ -34,18 +34,19 @@ class AddFileNode extends StatelessWidget {
               child: const Text('取消'),
             ),
             FlatButton(
-                onPressed: () async {
-                  if (isAddFile)
-                    await NiProcess.exec(
-                        'touch $currentPath/${textEditingController.text}\n');
-                  else {
-                    await NiProcess.exec(
-                        'mkdir $currentPath/${textEditingController.text}\n');
-                  }
-                  eventBus.fire(1);
-                  Navigator.pop(context);
-                },
-                child: const Text('确定')),
+              onPressed: () async {
+                if (isAddFile)
+                  await NiProcess.exec(
+                      'touch $currentPath/${textEditingController.text}\n');
+                else {
+                  await NiProcess.exec(
+                      'mkdir $currentPath/${textEditingController.text}\n');
+                }
+                eventBus.fire(1);
+                Navigator.pop(context);
+              },
+              child: const Text('确定'),
+            ),
           ],
         )
       ],
