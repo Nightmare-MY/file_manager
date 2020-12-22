@@ -9,8 +9,8 @@ import 'file_entity.dart';
 // 佛祖保佑能正常使用
 
 class NiDirectory extends FileEntity {
-  NiDirectory(String _path) {
-    path = _path;
+  NiDirectory(String path) {
+    this.path = path;
   }
   NiDirectory.initWithFullInfo(String _path, String _fullInfo) {
     path = _path;
@@ -38,6 +38,7 @@ class NiDirectory extends FileEntity {
     return _fileNodes;
   }
 
+  NiDirectory get parent => NiDirectory(FileSystemEntity.parentOf(path));
   Future<List<FileEntity>> listAndSort({
     bool verbose = true,
   }) async {
@@ -220,6 +221,6 @@ class NiDirectory extends FileEntity {
 
   @override
   String toString() {
-    return 'path:$path';
+    return 'path : $path';
   }
 }
