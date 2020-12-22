@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 import 'colors/file_colors.dart';
 import 'config/config.dart';
-import 'dialog/add_entity.dart';
+import 'dialog/add_entity_page.dart';
 import 'dialog/page_choose.dart';
 import 'page/center_drawer.dart';
 import 'page/file_manager_drawer.dart';
