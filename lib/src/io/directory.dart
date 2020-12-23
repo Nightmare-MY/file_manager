@@ -40,7 +40,7 @@ class NiDirectory extends FileEntity {
 
   NiDirectory get parent => NiDirectory(FileSystemEntity.parentOf(path));
   Future<List<FileEntity>> listAndSort({
-    bool verbose = true,
+    bool verbose = false,
   }) async {
     // if (Platform.isWindows) {
     //   return await listAndSortForWin();
@@ -64,11 +64,11 @@ class NiDirectory extends FileEntity {
       '$lsPath -aog "${PlatformUtil.getUnixPath(path)}"\n',
     );
     if (verbose) {
-      PrintUtil.printn('--------- lsOut ------------', 31, 47);
+      // PrintUtil.printn('--------- lsOut ------------', 31, 47);
       lsOut.split('\n').forEach((element) {
         PrintUtil.printn(element, 31, 47);
       });
-      PrintUtil.printn('--------- lsOut ------------', 31, 47);
+      // PrintUtil.printn('--------- lsOut ------------', 31, 47);
     }
     // 删除第一行 -> total xxx
     _fullmessage = lsOut.split('\n')..removeAt(0);
@@ -89,11 +89,11 @@ class NiDirectory extends FileEntity {
       }
     }
     if (verbose) {
-      PrintUtil.printn('------------ linkFileNode ------------', 35, 47);
+      // PrintUtil.printn('------------ linkFileNode ------------', 35, 47);
       linkFileNode.split('\n').forEach((element) {
-        PrintUtil.printn(element, 35, 47);
+        // PrintUtil.printn(element, 35, 47);
       });
-      PrintUtil.printn('------------ linkFileNode ------------', 35, 47);
+      // PrintUtil.printn('------------ linkFileNode ------------', 35, 47);
     }
     //
     if (linkFileNode.isNotEmpty) {
