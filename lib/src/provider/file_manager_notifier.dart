@@ -6,26 +6,30 @@ enum ClipType {
   Copy,
 }
 
-class FiMaPageNotifier extends ChangeNotifier {
+class Clipboards extends ChangeNotifier {
   List<FileEntity> checkNodes = <FileEntity>[];
   final List<String> _clipboard = <String>[];
   ClipType _clipType;
   ClipType get clipType => _clipType;
   List<String> get clipboard => _clipboard;
   void addCheck(FileEntity fileNode) {
-    checkNodes.add(fileNode);
+    // print('$this addCheck');
+    if (!checkNodes.contains(fileNode)) {
+      checkNodes.add(fileNode);
+    }
+    // print(checkNodes);
   }
 
   void removeCheck(FileEntity fileNode) {
     checkNodes.remove(fileNode);
   }
 
-  void removeAllCheck() {
+  void clearCheck() {
     checkNodes.clear();
     notifyListeners();
   }
 
-  void setClipBoard(ClipType clipType, String path) {
+  void addClipBoard(ClipType clipType, String path) {
     print('添加$path到剪切板');
     _clipType = clipType;
     if (!clipboard.contains(path)) {

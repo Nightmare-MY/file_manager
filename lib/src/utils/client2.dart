@@ -40,8 +40,11 @@ class NetworkManager {
 
   Future<void> init() async {
     try {
-      socket =
-          await Socket.connect(host, port, timeout: const Duration(seconds: 3));
+      socket = await Socket.connect(
+        host,
+        port,
+        timeout: const Duration(seconds: 3),
+      );
     } catch (e) {
       print('连接socket出现异常，e=${e.toString()}');
     }
