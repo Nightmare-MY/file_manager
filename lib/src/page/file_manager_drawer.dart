@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:file_manager/src/config/global.dart';
+import 'package:file_manager/src/page/file_manager_controller.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:global_repository/global_repository.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +14,10 @@ import 'setting.dart';
 class FileManagerDrawer extends StatefulWidget {
   const FileManagerDrawer({
     Key key,
+    @required this.controller,
   }) : super(key: key);
 
+  final FileManagerController controller;
   @override
   _FileManagerDrawerState createState() => _FileManagerDrawerState();
 }
@@ -144,8 +148,8 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
                           ),
                           InkWell(
                             onTap: () {
-                              eventBus.fire('/');
-                              Navigator.pop(context);
+                              widget.controller.updatePath('/');
+                              Navigator.of(context).pop();
                             },
                             child: SizedBox(
                               height: 48.0,
@@ -209,9 +213,11 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
                           if (sdcardInfo.isNotEmpty)
                             InkWell(
                               onTap: () async {
-                                // TODO 垃圾代码
-                                eventBus.fire(PlatformUtil.documentsDir);
-                                Navigator.pop(context);
+                                widget.controller.updatePath(
+                                  PlatformUtil.documentsDir,
+                                );
+                                Navigator.of(context);
+                                Navigator.of(context).pop();
                               },
                               child: SizedBox(
                                 height: 48.0,
@@ -298,7 +304,9 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
                                 itemBuilder: (BuildContext c, int i) {
                                   return InkWell(
                                     onTap: () {
-                                      eventBus.fire(bookMarks[i]);
+                                      Global.instance.eventBus.fire(
+                                        bookMarks[i],
+                                      );
                                       Navigator.pop(context);
                                     },
                                     onLongPress: () {
