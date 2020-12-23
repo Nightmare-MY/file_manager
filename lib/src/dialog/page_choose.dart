@@ -1,4 +1,5 @@
-import 'package:file_manager/src/page/fm_page.dart';
+import 'package:file_manager/src/page/file_manager_controller.dart';
+import 'package:file_manager/src/page/file_manager_view.dart';
 import 'package:flutter/material.dart';
 
 typedef AddNewPageCall = Future<void> Function();
@@ -6,16 +7,16 @@ typedef DeletePageCall = Future<void> Function(int index);
 typedef ChangePageCall = void Function(int index);
 
 class PageChoose extends StatefulWidget {
-  const PageChoose(
-      {Key key,
-      this.paths,
-      this.addNewPageCall,
-      this.deletePageCall,
-      this.changePageCall,
-      this.initIndex})
-      : super(key: key);
+  const PageChoose({
+    Key key,
+    this.controllers,
+    this.addNewPageCall,
+    this.deletePageCall,
+    this.changePageCall,
+    this.initIndex,
+  }) : super(key: key);
   final int initIndex;
-  final List<String> paths;
+  final List<FileManagerController> controllers;
   final AddNewPageCall addNewPageCall;
   final DeletePageCall deletePageCall;
   final ChangePageCall changePageCall;
@@ -61,7 +62,7 @@ class _PageChooseState extends State<PageChoose> {
                             3 *
                             MediaQuery.of(context).size.width +
                         20 * widget.initIndex),
-                itemCount: widget.paths.length,
+                itemCount: widget.controllers.length,
                 itemBuilder: (BuildContext context, int index) {
                   // bool isCur = index == popPage;
                   // print(popPage);
@@ -78,25 +79,25 @@ class _PageChooseState extends State<PageChoose> {
                             child: Stack(
                               alignment: Alignment.center,
                               children: <Widget>[
-                                AbsorbPointer(
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: MediaQuery(
-                                        data: MediaQueryData(
-                                          size: Size(
-                                            MediaQuery.of(context).size.width /
-                                                1.5,
-                                            MediaQuery.of(context).size.height /
-                                                2,
-                                          ),
-                                        ),
-                                        child: FMPage(
-                                          chooseFile: true,
-                                          key: GlobalObjectKey('FMZ$index'),
-                                          initpath: widget.paths[index],
-                                        ),
-                                      )),
-                                ),
+                                // AbsorbPointer(
+                                //   child: ClipRRect(
+                                //       borderRadius: BorderRadius.circular(8),
+                                //       child: MediaQuery(
+                                //         data: MediaQueryData(
+                                //           size: Size(
+                                //             MediaQuery.of(context).size.width /
+                                //                 1.5,
+                                //             MediaQuery.of(context).size.height /
+                                //                 2,
+                                //           ),
+                                //         ),
+                                //         child: FileManagerView(
+                                //           chooseFile: true,
+                                //           key: GlobalObjectKey('FMZ$index'),
+                                //           initpath: widget.paths[index],
+                                //         ),
+                                //       )),
+                                // ),
                                 SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width / 1.5,
@@ -143,9 +144,9 @@ class _PageChooseState extends State<PageChoose> {
                                           //     duration: 40, amplitude: 255);
                                         },
                                         onTap: () {
-                                          if (widget.paths.length > 1) {
+                                          if (widget.controllers.length > 1) {
                                             final int tmp = index;
-                                            widget.paths.removeAt(tmp);
+                                            widget.controllers.removeAt(tmp);
                                             widget.deletePageCall(tmp);
                                             setState(() {});
                                           } else {
@@ -168,7 +169,7 @@ class _PageChooseState extends State<PageChoose> {
                         ),
                       ),
                       Text(
-                        widget.paths[index],
+                        widget.controllers[index].dirPath,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
