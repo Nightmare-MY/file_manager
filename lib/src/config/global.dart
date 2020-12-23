@@ -16,6 +16,5 @@ class Global {
     return _instance;
   }
 
-  EventBus eventBus = EventBus();
   Future<void> initGlobal() async {}
 }

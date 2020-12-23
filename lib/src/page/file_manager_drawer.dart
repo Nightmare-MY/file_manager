@@ -216,7 +216,6 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
                                 widget.controller.updatePath(
                                   PlatformUtil.documentsDir,
                                 );
-                                Navigator.of(context);
                                 Navigator.of(context).pop();
                               },
                               child: SizedBox(
@@ -304,9 +303,10 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
                                 itemBuilder: (BuildContext c, int i) {
                                   return InkWell(
                                     onTap: () {
-                                      Global.instance.eventBus.fire(
+                                      widget.controller.updatePath(
                                         bookMarks[i],
                                       );
+
                                       Navigator.pop(context);
                                     },
                                     onLongPress: () {
