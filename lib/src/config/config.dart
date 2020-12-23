@@ -7,7 +7,9 @@ class Config {
   Config._();
   // 使用前一定先初始化
   static Future<void> initConfig() async {
-    packageName ??= await PlatformUtil.packageName;
+    await PlatformUtil.init();
+    documentDir = PlatformUtil.documentsDir;
+    packageName = PlatformUtil.packageName;
     if (!Directory(frameworkPath).existsSync()) {
       Directory(frameworkPath).create(
         recursive: true,
@@ -16,12 +18,12 @@ class Config {
   }
 
   static String packageName;
+  static String documentDir;
   static String appName = 'FileManager';
-  static const String backupPath = 'YanTool/Backup';
-  static String binPath = '/data/data/$packageName/files/usr/bin';
-  static String filesPath = '/data/data/$packageName/files';
-  static String dataPath = '$filesPath/$appName';
-  static String aaptPath = '$filesPath/$appName/aapt';
+  static String binPath = PlatformUtil.getBinaryPath();
+  static String filesPath = PlatformUtil.getDataPath();
+  static String dataPath = PlatformUtil.getDataPath() + appName;
+  static String aaptPath = '$dataPath/aapt';
   static String frameworkPath = dataPath + '/Framework';
-  static FiMaPageNotifier fiMaPageNotifier;
+  static Clipboards fiMaPageNotifier;
 }
