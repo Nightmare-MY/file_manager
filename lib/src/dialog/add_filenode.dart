@@ -1,3 +1,4 @@
+import 'package:file_manager/src/config/global.dart';
 import 'package:global_repository/global_repository.dart';
 import 'package:flutter/material.dart';
 
@@ -42,7 +43,6 @@ class AddFileNode extends StatelessWidget {
                   await NiProcess.exec(
                       'mkdir $currentPath/${textEditingController.text}\n');
                 }
-                eventBus.fire(1);
                 Navigator.pop(context);
               },
               child: const Text('确定'),

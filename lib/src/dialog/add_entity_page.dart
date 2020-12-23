@@ -8,7 +8,10 @@ enum FileType {
 
 // create file or directory page
 class AddEntity extends StatefulWidget {
-  const AddEntity({Key key, this.curDir}) : super(key: key);
+  const AddEntity({
+    Key key,
+    @required this.curDir,
+  }) : super(key: key);
   final String curDir;
   @override
   _AddEntityState createState() => _AddEntityState();
