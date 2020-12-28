@@ -40,7 +40,7 @@ class NiDirectory extends FileEntity {
 
   NiDirectory get parent => NiDirectory(FileSystemEntity.parentOf(path));
   Future<List<FileEntity>> listAndSort({
-    bool verbose = false,
+    bool verbose = true,
   }) async {
     // if (Platform.isWindows) {
     //   return await listAndSortForWin();
@@ -59,12 +59,12 @@ class NiDirectory extends FileEntity {
     int _startIndex;
     List<String> _fullmessage = <String>[];
     path = path.replaceAll('//', '/');
-    // print('刷新的路径=====>>$path');
+    print('刷新的路径=====>>${PlatformUtil.getUnixPath(path)}');
     final String lsOut = await NiProcess.exec(
       '$lsPath -aog "${PlatformUtil.getUnixPath(path)}"\n',
     );
     if (verbose) {
-      // PrintUtil.printn('--------- lsOut ------------', 31, 47);
+      PrintUtil.printn('--------- lsOut ------------', 31, 47);
       lsOut.split('\n').forEach((element) {
         PrintUtil.printn(element, 31, 47);
       });

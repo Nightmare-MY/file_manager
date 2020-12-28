@@ -44,6 +44,9 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
+    if (Platform.isWindows) {
+      return;
+    }
     print(await NiProcess.exec('id'));
 
     final String result = await NiProcess.exec('df -k');

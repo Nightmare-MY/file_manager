@@ -50,6 +50,11 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
     super.initState();
     initAnimation();
     initHomePage();
+    test();
+  }
+
+  Future<void> test() async {
+    print(await NiProcess.exec('env'));
   }
 
   @override
@@ -84,10 +89,10 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
         builder: (BuildContext context) {
           return Row(
             children: [
-              if (PlatformUtil.isDesktop())
-                FileManagerDrawer(
-                  controller: _controllers[_commonController.page.toInt()],
-                ),
+              // if (PlatformUtil.isDesktop())
+              //   FileManagerDrawer(
+              //     controller: curController,
+              //   ),
               SizedBox(
                 width: MediaQuery.of(context).size.width -
                     (PlatformUtil.isMobilePhone() ? 0.0 : 300),
