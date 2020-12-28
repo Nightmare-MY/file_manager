@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:event_bus/event_bus.dart';
+import 'package:file_manager/src/page/file_manager_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,41 +31,48 @@ class FileManager extends StatelessWidget {
     PlatformUtil.init();
   }
   // TODO
-  // static Future<String> chooseFile({
-  //   @required BuildContext context,
-  //   String pickPath,
-  // }) async {
-  //   NiToast.initContext(context);
-  //   await PlatformUtil.init();
-  //   final String documentDir = PlatformUtil.documentsDir;
-  //   return await Navigator.of(context).push(
-  //     MaterialPageRoute(
-  //       builder: (_) {
-  //         // SafeArea;
-  //         return MultiProvider(
-  //           providers: <SingleChildCloneableWidget>[
-  //             ChangeNotifierProvider<Clipboards>(
-  //               create: (_) => Clipboards(),
-  //             ),
-  //           ],
-  //           child: Theme(
-  //             data: Theme.of(context),
-  //             child: Scaffold(
-  //               appBar: AppBar(
-  //                 centerTitle: true,
-  //                 title: const Text('选择文件'),
-  //               ),
-  //               body: FileManagerView(
-  //                 chooseFile: true,
-  //                 initpath: pickPath ?? '$documentDir/YanTool/Rom',
-  //               ),
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
+  static Future<String> chooseFile({
+    @required BuildContext context,
+    String pickPath,
+  }) async {
+    NiToast.initContext(context);
+    await PlatformUtil.init();
+    final String documentDir = PlatformUtil.documentsDir;
+    return await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) {
+          // SafeArea;
+          return MultiProvider(
+            providers: <SingleChildCloneableWidget>[
+              ChangeNotifierProvider<Clipboards>(
+                create: (_) => Clipboards(),
+              ),
+            ],
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                appBarTheme: const AppBarTheme(
+                  color: Colors.white,
+                  elevation: 0.0,
+                ),
+              ),
+              child: Scaffold(
+                appBar: AppBar(
+                  centerTitle: true,
+                  title: const Text('选择文件'),
+                ),
+                body: FileManagerView(
+                  chooseFile: true,
+                  controller: FileManagerController(
+                    pickPath ?? '$documentDir/YanTool/Rom',
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -62,6 +62,7 @@ class _FileManagerViewState extends State<FileManagerView>
 
   @override
   Widget build(BuildContext context) {
+    Config.fiMaPageNotifier ??= Provider.of(context);
     return Theme(
       data: Theme.of(context).copyWith(
         iconTheme: IconThemeData(
