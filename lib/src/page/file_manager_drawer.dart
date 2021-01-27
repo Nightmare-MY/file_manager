@@ -55,7 +55,7 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
     }
     final List<String> infos = result.split('\n');
     for (final String line in infos) {
-      if (line.endsWith('/data')) {
+      if (line.endsWith('/')) {
         rootInfo = line.split(RegExp(r'\s{1,}'));
         rootAnima = Tween<double>(
           begin: 0,

@@ -519,6 +519,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
                 borderRadius: BorderRadius.circular(8.0),
                 onTap: () {
                   // return;
+
                   showDialog<void>(
                     context: context,
                     builder: (_) {
@@ -577,6 +578,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
                     child: const Icon(Icons.more_vert, size: 22.0),
                     onTapDown: (TapDownDetails detials) {},
                     onTap: () {
+                      // NiToast.showToast('已复制');
                       Future<void> showButtonMenu() async {
                         final RenderBox button =
                             context.findRenderObject() as RenderBox;

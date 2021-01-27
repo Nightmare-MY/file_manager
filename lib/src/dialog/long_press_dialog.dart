@@ -90,7 +90,7 @@ class _LongPressDialogState extends State<LongPressDialog> {
       onTap: () async {
         await Clipboard.setData(ClipboardData(text: details));
         Feedback.forTap(context);
-        // showToast2('已复制$name');
+        NiToast.showToast('已复制$name');
       },
       child: Padding(
         padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
@@ -101,16 +101,17 @@ class _LongPressDialogState extends State<LongPressDialog> {
               Text('$name:$details'),
               if (details == '')
                 Center(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const <Widget>[
-                    Text('获取中'),
-                    SpinKitThreeBounce(
-                      color: FileColors.fileAppColor,
-                      size: 16.0,
-                    ),
-                  ],
-                )),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const <Widget>[
+                      Text('获取中'),
+                      SpinKitThreeBounce(
+                        color: FileColors.fileAppColor,
+                        size: 16.0,
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         ),
