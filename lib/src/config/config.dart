@@ -7,8 +7,6 @@ class Config {
   Config._();
   // 使用前一定先初始化
   static Future<void> initConfig() async {
-    await PlatformUtil.init();
-    documentDir = PlatformUtil.documentsDir;
     packageName = PlatformUtil.packageName;
     if (!Directory(frameworkPath).existsSync()) {
       Directory(frameworkPath).create(
@@ -18,7 +16,6 @@ class Config {
   }
 
   static String packageName;
-  static String documentDir;
   static String appName = 'FileManager';
   static String binPath = PlatformUtil.getBinaryPath();
   static String filesPath = PlatformUtil.getDataPath();

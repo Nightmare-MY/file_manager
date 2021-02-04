@@ -114,7 +114,8 @@ class _FileManagerViewState extends State<FileManagerView>
     //页面启动的时候的初始化
 
     widget.controller.addListener(controllerCallback);
-    _currentdirectory = widget.controller.dirPath ?? Config.documentDir;
+    _currentdirectory =
+        widget.controller.dirPath ?? Global.instance.doucumentDir;
     // print('_currentdirectory->$_currentdirectory');
     _getFileNodes(_currentdirectory);
   }

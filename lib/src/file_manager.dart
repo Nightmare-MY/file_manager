@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:event_bus/event_bus.dart';
+import 'package:file_manager/src/config/global.dart';
 import 'package:file_manager/src/page/file_manager_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,17 +28,14 @@ enum FileState {
 }
 
 class FileManager extends StatelessWidget {
-  FileManager() {
-    PlatformUtil.init();
-  }
+  FileManager() {}
   // TODO
   static Future<String> chooseFile({
     @required BuildContext context,
     String pickPath,
   }) async {
     NiToast.initContext(context);
-    await PlatformUtil.init();
-    final String documentDir = PlatformUtil.documentsDir;
+    final String documentDir = await PlatformUtil.getDocumentDirectory();
     return await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) {

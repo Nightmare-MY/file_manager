@@ -217,7 +217,7 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
                             InkWell(
                               onTap: () async {
                                 widget.controller.updatePath(
-                                  PlatformUtil.documentsDir,
+                                  Global.instance.doucumentDir,
                                 );
                                 Navigator.of(context).pop();
                               },

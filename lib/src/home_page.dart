@@ -8,6 +8,7 @@ import 'package:global_repository/global_repository.dart';
 import 'package:provider/provider.dart';
 import 'colors/file_colors.dart';
 import 'config/config.dart';
+import 'config/global.dart';
 import 'dialog/add_entity_page.dart';
 import 'dialog/page_choose.dart';
 import 'file_manager.dart';
@@ -352,7 +353,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
       if (Platform.isAndroid)
         temp = '/storage/emulated/0';
       else {
-        temp = PlatformUtil.documentsDir;
+        temp = Global.instance.doucumentDir;
       }
     }
     temp.trim().split('\n').forEach((element) {
@@ -540,8 +541,8 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
                           addNewPageCall: () async {
                             Navigator.of(context).pop();
                             print(
-                                'PlatformUtil.documentsDir->${PlatformUtil.documentsDir}');
-                            addNewPage(PlatformUtil.documentsDir);
+                                'PlatformUtil.documentsDir->${Global.instance.doucumentDir}');
+                            addNewPage(Global.instance.doucumentDir);
                           },
                         ),
                       );
