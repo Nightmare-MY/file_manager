@@ -28,7 +28,9 @@ enum FileState {
 }
 
 class FileManager extends StatelessWidget {
-  FileManager() {}
+  FileManager() {
+    Global.instance.initGlobal();
+  }
   // TODO
   static Future<String> chooseFile({
     @required BuildContext context,
