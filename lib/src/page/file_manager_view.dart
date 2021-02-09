@@ -16,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../io/directory.dart';
 import '../io/file.dart';
-import '../io/file.dart';
 import 'text_edit.dart';
 import 'widget/file_item_suffix.dart';
 
@@ -28,6 +27,7 @@ class FileManagerView extends StatefulWidget {
   const FileManagerView({
     Key key,
     @required this.controller,
+    // 这个值为真，单机item的时候会直接返回item的路径
     this.chooseFile = false,
     this.pathCallBack,
   }) : super(key: key);
@@ -41,13 +41,18 @@ class FileManagerView extends StatefulWidget {
 
 class _FileManagerViewState extends State<FileManagerView>
     with TickerProviderStateMixin {
-  String _currentdirectory = ''; //当前所在的文件夹
-  List<FileEntity> _fileNodes = <FileEntity>[]; //保存所有文件的节点
-  final ScrollController _scrollController = ScrollController(); //列表滑动控制器
-  AnimationController _animationController; //动画控制器，用来控制文件夹进入时的透明度
-  Animation<double> _opacityTween; //透明度动画补间值
-  final Map<String, double> _historyOffset =
-      <String, double>{}; //记录每一次的浏览位置，key 是路径，value是offset
+  //当前所在的文件夹
+  String _currentdirectory = '';
+  //保存所有文件的节点
+  List<FileEntity> _fileNodes = <FileEntity>[];
+  //列表滑动控制器
+  final ScrollController _scrollController = ScrollController();
+  //动画控制器，用来控制文件夹进入时的透明度
+  AnimationController _animationController;
+  //透明度动画补间值
+  Animation<double> _opacityTween;
+  //记录每一次的浏览位置，key 是路径，value是offset
+  final Map<String, double> _historyOffset = <String, double>{};
   bool listIsBuilding = false;
 
   @override
@@ -65,7 +70,6 @@ class _FileManagerViewState extends State<FileManagerView>
 
   @override
   Widget build(BuildContext context) {
-    Config.fiMaPageNotifier ??= Provider.of(context, listen: false);
     return Theme(
       data: Theme.of(context).copyWith(
         iconTheme: IconThemeData(
@@ -154,9 +158,9 @@ class _FileManagerViewState extends State<FileManagerView>
   }
 
   void itemOnTap(FileEntity fileNode) {
-    print(Config.fiMaPageNotifier.checkNodes);
-    if (Config.fiMaPageNotifier.checkNodes.contains(fileNode)) {
-      Config.fiMaPageNotifier.removeCheck(fileNode);
+    print(Global.instance.clipboards.checkNodes);
+    if (Global.instance.clipboards.checkNodes.contains(fileNode)) {
+      Global.instance.clipboards.removeCheck(fileNode);
       setState(() {});
       return;
     }
@@ -346,17 +350,15 @@ class _FileManagerViewState extends State<FileManagerView>
     return WillPopScope(
       onWillPop: onWillPop,
       child: Material(
-        textStyle: TextStyle(
-          fontFamily: Platform.isLinux ? 'SourceHanSansSC-Light' : null,
-        ),
         color: Colors.white,
         elevation: 8.0,
         child: FadeTransition(
           opacity: _opacityTween,
           child: RefreshIndicator(
             onRefresh: () async {
-              if (!listIsBuilding)
+              if (!listIsBuilding) {
                 _getFileNodes(_currentdirectory, afterSort: () async {});
+              }
             },
             displacement: 1,
             child: DraggableScrollbar.semicircle(
@@ -375,7 +377,7 @@ class _FileManagerViewState extends State<FileManagerView>
       cacheExtent: 400,
       controller: _scrollController,
       itemCount: _fileNodes.length,
-      padding: const EdgeInsets.only(top: 0.0),
+      padding: EdgeInsets.zero,
       //不然会有一个距离上面的边距
       itemBuilder: (BuildContext context, int index) {
         // print(widget.fileNode);
@@ -477,7 +479,7 @@ class _FileItemState extends State<FileItem>
     if (dx == 40.0) {
       print('应该选择');
       Feedback.forLongPress(context);
-      fiMaPageNotifier.addCheck(widget.fileNode);
+      clipboards.addCheck(widget.fileNode);
       setState(() {});
     }
     tweenPadding = Tween<double>(
@@ -493,7 +495,7 @@ class _FileItemState extends State<FileItem>
     _animationController.forward().whenComplete(() {});
   }
 
-  Clipboards fiMaPageNotifier;
+  Clipboards clipboards;
   @override
   void dispose() {
     _animationController.dispose();
@@ -502,7 +504,7 @@ class _FileItemState extends State<FileItem>
 
   @override
   Widget build(BuildContext context) {
-    fiMaPageNotifier = Config.fiMaPageNotifier;
+    clipboards = Global.instance.clipboards;
     // PrintUtil.printn(fiMaPageNotifier.checkNodes, 32);
     final List<String> _tmp = widget.fileNode.path.split(' -> '); //有的有符号链接
     final String currentFileName =
@@ -519,7 +521,7 @@ class _FileItemState extends State<FileItem>
       height: 54,
       child: Stack(
         children: <Widget>[
-          if (fiMaPageNotifier.checkNodes.contains(widget.fileNode))
+          if (clipboards.checkNodes.contains(widget.fileNode))
             Container(
               color: Colors.grey.withOpacity(0.6),
             ),
@@ -632,6 +634,7 @@ class _FileItemState extends State<FileItem>
   }
 }
 
+// 通过判断文件节点的扩展名来显示对应的icon
 Widget getWidgetFromExtension(FileEntity fileNode, BuildContext context,
     [bool isFile = true]) {
   if (isFile) {

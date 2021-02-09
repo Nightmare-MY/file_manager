@@ -74,11 +74,12 @@ class FileManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Global.instance.clipboards = Clipboards();
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<Clipboards>(
-          create: (_) => Clipboards(),
-        ),
+        ChangeNotifierProvider<Clipboards>.value(
+          value: Global.instance.clipboards,
+        )
       ],
       child: Theme(
         data: ThemeData(

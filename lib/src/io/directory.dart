@@ -82,9 +82,7 @@ class NiDirectoryLinux extends AbstractDirectory with NiProcessBased {
     String lsPath;
     if (Platform.isAndroid)
       lsPath = '/system/bin/ls';
-    else if (Platform.isWindows) {
-      lsPath = 'ls';
-    } else
+    else
       lsPath = 'ls';
     // --------------------------------------
     int _startIndex;

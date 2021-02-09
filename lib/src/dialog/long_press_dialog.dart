@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_manager/src/config/config.dart';
+import 'package:file_manager/src/config/global.dart';
 import 'package:file_manager/src/io/file_entity.dart';
 import 'package:file_manager/src/page/file_manager_controller.dart';
 import 'package:file_manager/src/provider/file_manager_notifier.dart';
@@ -356,7 +357,7 @@ class _LongPressDialogState extends State<LongPressDialog> {
   }
 
   Widget defaultWidget() {
-    final Clipboards fiMaPageNotifier = Config.fiMaPageNotifier;
+    final Clipboards fiMaPageNotifier = Global.instance.clipboards;
     List<FileEntity> _nodes = fiMaPageNotifier.checkNodes;
     if (_nodes.isEmpty) {
       _nodes = <FileEntity>[widget.fileNode];

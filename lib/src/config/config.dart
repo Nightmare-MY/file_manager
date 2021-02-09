@@ -22,5 +22,4 @@ class Config {
   static String dataPath = PlatformUtil.getDataPath() + appName;
   static String aaptPath = '$dataPath/aapt';
   static String frameworkPath = dataPath + '/Framework';
-  static Clipboards fiMaPageNotifier;
 }

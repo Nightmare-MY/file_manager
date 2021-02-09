@@ -55,7 +55,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
   }
 
   Future<void> test() async {
-    print(await NiProcess.exec('env'));
+    // print(await NiProcess.exec('env'));
   }
 
   @override
@@ -67,7 +67,6 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
 
   @override
   Widget build(BuildContext context) {
-    Config.fiMaPageNotifier = Provider.of(context, listen: false);
     NiToast.initContext(context);
     FileManagerController curController;
 

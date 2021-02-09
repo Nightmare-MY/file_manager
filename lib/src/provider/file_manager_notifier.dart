@@ -6,6 +6,7 @@ enum ClipType {
   Copy,
 }
 
+// 用来存剪切板
 class Clipboards extends ChangeNotifier {
   List<FileEntity> checkNodes = <FileEntity>[];
   final List<String> _clipboard = <String>[];
