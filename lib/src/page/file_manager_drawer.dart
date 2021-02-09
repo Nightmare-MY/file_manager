@@ -49,25 +49,25 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
     }
     print(await NiProcess.exec('id'));
 
-    final String result = await NiProcess.exec('df -k');
+    final String result = await NiProcess.exec('/system/bin/df -k');
     for (final String line in result.split('\n')) {
       print('line -> $line');
     }
     final List<String> infos = result.split('\n');
     for (final String line in infos) {
-      if (line.endsWith('/')) {
-        rootInfo = line.split(RegExp(r'\s{1,}'));
-        rootAnima = Tween<double>(
-          begin: 0,
-          end: int.parse(rootInfo[2]) / int.parse(rootInfo[1]),
-        ).animate(
-          CurvedAnimation(
-            curve: Curves.ease,
-            parent: controller,
-          ),
-        );
-        setState(() {});
-      }
+      // if (line.endsWith('/')) {
+      //   rootInfo = line.split(RegExp(r'\s{1,}'));
+      //   rootAnima = Tween<double>(
+      //     begin: 0,
+      //     end: int.parse(rootInfo[2]) / int.parse(rootInfo[1]),
+      //   ).animate(
+      //     CurvedAnimation(
+      //       curve: Curves.ease,
+      //       parent: controller,
+      //     ),
+      //   );
+      //   setState(() {});
+      // }
       if (line.endsWith('/storage/emulated')) {
         sdcardInfo = line.split(RegExp(r'\s{1,}'));
         sdcardAnima = Tween<double>(
