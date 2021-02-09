@@ -4,7 +4,7 @@ import 'package:file_manager/src/provider/file_manager_notifier.dart';
 import 'package:global_repository/global_repository.dart';
 
 class Config {
-  Config._();
+  Config();
   // 使用前一定先初始化
   static Future<void> initConfig() async {
     packageName = PlatformUtil.packageName;

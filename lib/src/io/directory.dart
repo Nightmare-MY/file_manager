@@ -74,7 +74,7 @@ class NiDirectoryLinux extends AbstractDirectory with NiProcessBased {
 
   @override
   Future<List<FileEntity>> listAndSort({
-    bool verbose = false,
+    bool verbose = true,
   }) async {
     final List<FileEntity> _fileNodes = <FileEntity>[];
 

@@ -24,8 +24,8 @@ abstract class FileEntity {
 
   String get nodeName;
 
-  bool get isFile => runtimeType == AbstractNiFile;
-  bool get isDirectory => runtimeType == AbstractDirectory;
+  bool get isFile => this is AbstractNiFile;
+  bool get isDirectory => this is AbstractDirectory;
   static final List<String> imagetype = <String>['jpg', 'png']; //图片的所有扩展名
   static final List<String> textType = <String>[
     'smali',
