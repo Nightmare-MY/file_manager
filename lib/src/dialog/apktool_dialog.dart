@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:global_repository/global_repository.dart';
 
+import '../io/file.dart';
+import '../io/file.dart';
 import 'apktool_exec_page.dart';
 
 class ApkToolDialog extends StatefulWidget {
   const ApkToolDialog({Key key, @required this.fileNode}) : super(key: key);
-  final NiFile fileNode;
+  final AbstractNiFile fileNode;
 
   @override
   _ApkToolDialogState createState() => _ApkToolDialogState(fileNode);
@@ -18,7 +20,7 @@ class ApkToolDialog extends StatefulWidget {
 
 class _ApkToolDialogState extends State<ApkToolDialog> {
   _ApkToolDialogState(this._fileNode);
-  final NiFile _fileNode;
+  final AbstractNiFile _fileNode;
 
   Widget apkToolItem(String title, void Function() onTap) {
     return Material(

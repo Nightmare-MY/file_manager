@@ -1,4 +1,6 @@
 import 'directory.dart';
+import 'directory.dart';
+import 'file.dart';
 import 'file.dart';
 
 abstract class FileEntity {
@@ -20,8 +22,8 @@ abstract class FileEntity {
   String uid = '';
   String gid = '';
   String get nodeName => path.split(' -> ').first.split('/').last;
-  bool get isFile => runtimeType == NiFile;
-  bool get isDirectory => runtimeType == NiDirectory;
+  bool get isFile => runtimeType == AbstractNiFile;
+  bool get isDirectory => runtimeType == AbstractDirectory;
   static final List<String> imagetype = <String>['jpg', 'png']; //图片的所有扩展名
   static final List<String> textType = <String>[
     'smali',

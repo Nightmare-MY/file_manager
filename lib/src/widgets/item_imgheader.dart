@@ -7,9 +7,11 @@ import 'package:file_manager/src/io/file.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import '../io/file.dart';
+
 class ItemImgHeader extends StatefulWidget {
   const ItemImgHeader({Key key, this.fileNode}) : super(key: key);
-  final NiFile fileNode;
+  final AbstractNiFile fileNode;
 
   @override
   _ItemImgHeaderState createState() => _ItemImgHeaderState();

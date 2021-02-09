@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:file_manager/src/io/file.dart';
 import 'package:flutter/material.dart' hide TextField, TextEditingController;
 import 'package:flutter/material.dart';
+
+import '../io/file.dart';
 // import 'package:flutter_toolkit/widgets/text_field/editable_text.dart';
 // import 'package:flutter_toolkit/widgets/text_field/custom_editable_text.dart';
 // import 'package:flutter_toolkit/widgets/text_field/text_field.dart';
@@ -180,7 +182,7 @@ import 'package:flutter/material.dart';
 
 class TextEdit extends StatefulWidget {
   const TextEdit({Key key, @required this.fileNode}) : super(key: key);
-  final NiFile fileNode;
+  final AbstractNiFile fileNode;
 
   @override
   _TextEditState createState() => _TextEditState();

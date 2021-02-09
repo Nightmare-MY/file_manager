@@ -14,6 +14,9 @@ import 'package:file_manager/src/io/file_entity.dart';
 import 'package:file_manager/src/provider/file_manager_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../io/directory.dart';
+import '../io/file.dart';
+import '../io/file.dart';
 import 'text_edit.dart';
 import 'widget/file_item_suffix.dart';
 
@@ -137,7 +140,8 @@ class _FileManagerViewState extends State<FileManagerView>
 
   Future<void> _getFileNodes(String path, {void Function() afterSort}) async {
     // 获取文件列表和刷新页面
-    _fileNodes = await NiDirectory(path).listAndSort();
+    _fileNodes =
+        await AbstractDirectory.getPlatformDirectory(path).listAndSort();
     setState(() {});
     // 在一次获取后异步更新文件节点的其他参数，这个过程是非常快的
     getNodeFullArgs();
@@ -194,7 +198,7 @@ class _FileManagerViewState extends State<FileManagerView>
           MaterialPageRoute<void>(
             builder: (BuildContext c) {
               return TextEdit(
-                fileNode: fileNode as NiFile,
+                fileNode: fileNode as AbstractNiFile,
               );
             },
           ),
@@ -647,7 +651,7 @@ Widget getWidgetFromExtension(FileEntity fileNode, BuildContext context,
     else if (fileNode.nodeName.endsWith('.jpg') ||
         fileNode.nodeName.endsWith('.png')) {
       return ItemImgHeader(
-        fileNode: fileNode as NiFile,
+        fileNode: fileNode as AbstractNiFile,
       );
     } else
       return SvgPicture.asset(

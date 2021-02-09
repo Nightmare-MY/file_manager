@@ -6,13 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:global_repository/global_repository.dart';
 
+import '../io/file.dart';
+
 class ApktoolExecPage extends StatefulWidget {
   const ApktoolExecPage({
     Key key,
     this.fileNode,
     this.cmd,
   }) : super(key: key);
-  final NiFile fileNode;
+  final AbstractNiFile fileNode;
   final String cmd;
 
   @override

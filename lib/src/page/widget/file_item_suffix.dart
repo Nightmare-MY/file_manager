@@ -6,6 +6,9 @@ import 'package:file_manager/src/io/file_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:global_repository/global_repository.dart';
 
+import '../../io/directory.dart';
+import '../../io/file.dart';
+
 class FileItemSuffix extends StatelessWidget {
   const FileItemSuffix({Key key, this.fileNode}) : super(key: key);
 
@@ -23,7 +26,7 @@ class FileItemSuffix extends StatelessWidget {
               context: context,
               duration: const Duration(milliseconds: 200),
               child: ApktoolEncodeDialog(
-                directory: fileNode as NiDirectory,
+                directory: fileNode as AbstractDirectory,
               ),
             );
           },
@@ -39,7 +42,7 @@ class FileItemSuffix extends StatelessWidget {
               context: context,
               duration: const Duration(milliseconds: 200),
               child: ApkToolDialog(
-                fileNode: fileNode as NiFile,
+                fileNode: fileNode as AbstractNiFile,
               ),
             );
           },
