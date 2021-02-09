@@ -65,7 +65,7 @@ class _FileManagerViewState extends State<FileManagerView>
 
   @override
   Widget build(BuildContext context) {
-    Config.fiMaPageNotifier ??= Provider.of(context);
+    Config.fiMaPageNotifier ??= Provider.of(context, listen: false);
     return Theme(
       data: Theme.of(context).copyWith(
         iconTheme: IconThemeData(
@@ -269,7 +269,7 @@ class _FileManagerViewState extends State<FileManagerView>
             fileNode: fileNode,
             initpage0: initpage0,
             initpage1: initpage1,
-            fiMaPageNotifier: Provider.of(context),
+            fiMaPageNotifier: Provider.of(context, listen: false),
             callback: () async {
               _getFileNodes(
                 _currentdirectory,

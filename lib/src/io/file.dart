@@ -1,6 +1,7 @@
 import 'package:global_repository/global_repository.dart';
 
 import 'file_entity.dart';
+import 'file_entity.dart';
 
 abstract class AbstractNiFile extends FileEntity {
   AbstractNiFile(this._path, this._fullInfo);
@@ -17,29 +18,9 @@ abstract class AbstractNiFile extends FileEntity {
   final String _fullInfo;
   @override
   String get fullInfo => _fullInfo;
-
-  Future<bool> delete() {
-    throw UnimplementedError();
-  }
-
-  Future<bool> copy(AbstractNiFile to) {
-    throw UnimplementedError();
-  }
-
-  Future<bool> cut(AbstractNiFile to) {
-    throw UnimplementedError();
-  }
-
-  Future<bool> rename(AbstractNiFile name) {
-    throw UnimplementedError();
-  }
 }
 
-mixin NiProcessBasedFile on AbstractNiFile {
-  NiProcess niProcess;
-}
-
-class NiFileLinux extends AbstractNiFile with NiProcessBasedFile {
+class NiFileLinux extends AbstractNiFile with NiProcessBased {
   NiFileLinux(String path, String fullInfo) : super(path, fullInfo);
 
   // @override

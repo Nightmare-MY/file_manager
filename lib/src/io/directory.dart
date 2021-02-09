@@ -4,6 +4,7 @@ import 'package:global_repository/global_repository.dart';
 
 import 'file.dart';
 import 'file_entity.dart';
+import 'file_entity.dart';
 
 abstract class AbstractDirectory extends FileEntity {
   AbstractDirectory(String path, [String fullInfo]) {
@@ -44,7 +45,7 @@ abstract class AbstractDirectory extends FileEntity {
   }
 }
 
-class NiDirectoryWin extends AbstractDirectory {
+class NiDirectoryWin extends AbstractDirectory with NiProcessBased {
   NiDirectoryWin(String path, [String fullPath]) : super(path, fullPath);
 
   @override
@@ -68,7 +69,7 @@ class NiDirectoryWin extends AbstractDirectory {
   }
 }
 
-class NiDirectoryLinux extends AbstractDirectory {
+class NiDirectoryLinux extends AbstractDirectory with NiProcessBased {
   NiDirectoryLinux(String path, [String fullInfo]) : super(path, fullInfo);
 
   @override
