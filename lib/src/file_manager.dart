@@ -41,7 +41,7 @@ class FileManager extends StatelessWidget {
         builder: (_) {
           // SafeArea;
           return MultiProvider(
-            providers: <SingleChildCloneableWidget>[
+            providers: [
               ChangeNotifierProvider<Clipboards>(
                 create: (_) => Clipboards(),
               ),
@@ -75,7 +75,7 @@ class FileManager extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: <SingleChildCloneableWidget>[
+      providers: [
         ChangeNotifierProvider<Clipboards>(
           create: (_) => Clipboards(),
         ),

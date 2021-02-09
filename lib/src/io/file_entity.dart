@@ -1,3 +1,5 @@
+import 'package:global_repository/global_repository.dart';
+
 import 'directory.dart';
 import 'file.dart';
 
@@ -19,9 +21,11 @@ abstract class FileEntity {
   String size = '';
   String uid = '';
   String gid = '';
-  String get nodeName => path.split(' -> ').first.split('/').last;
-  bool get isFile => runtimeType == NiFile;
-  bool get isDirectory => runtimeType == NiDirectory;
+
+  String get nodeName;
+
+  bool get isFile => runtimeType == AbstractNiFile;
+  bool get isDirectory => runtimeType == AbstractDirectory;
   static final List<String> imagetype = <String>['jpg', 'png']; //图片的所有扩展名
   static final List<String> textType = <String>[
     'smali',
@@ -52,4 +56,27 @@ abstract class FileEntity {
   bool operator ==(Object other) {
     return super == other;
   }
+
+  Future<bool> delete() {
+    throw UnimplementedError();
+  }
+
+  Future<bool> copy(AbstractNiFile to) {
+    throw UnimplementedError();
+  }
+
+  Future<bool> cut(AbstractNiFile to) {
+    throw UnimplementedError();
+  }
+
+  Future<bool> rename(AbstractNiFile name) {
+    throw UnimplementedError();
+  }
+}
+
+mixin NiProcessBased on FileEntity {
+  @override
+  String get nodeName => path.split(' -> ').first.split('/').last;
+
+  NiProcess niProcess;
 }

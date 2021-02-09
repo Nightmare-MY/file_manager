@@ -67,7 +67,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
 
   @override
   Widget build(BuildContext context) {
-    Config.fiMaPageNotifier = Provider.of(context);
+    Config.fiMaPageNotifier = Provider.of(context, listen: false);
     NiToast.initContext(context);
     FileManagerController curController;
 

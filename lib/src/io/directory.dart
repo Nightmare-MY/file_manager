@@ -4,47 +4,78 @@ import 'package:global_repository/global_repository.dart';
 
 import 'file.dart';
 import 'file_entity.dart';
+import 'file_entity.dart';
 
-// 这套代码写得很烂，欢迎帮忙优化
-// 佛祖保佑能正常使用
-
-class NiDirectory extends FileEntity {
-  NiDirectory(String path) {
+abstract class AbstractDirectory extends FileEntity {
+  AbstractDirectory(String path, [String fullInfo]) {
     this.path = path;
+    this.fullInfo = fullInfo ?? '';
   }
-  NiDirectory.initWithFullInfo(String _path, String _fullInfo) {
-    path = _path;
-    fullInfo = _fullInfo;
+
+  factory AbstractDirectory.getPlatformDirectory(String path,
+      [String fullInfo]) {
+    if (Platform.isWindows)
+      return NiDirectoryWin(path, fullInfo);
+    else
+      return NiDirectoryLinux(path, fullInfo);
   }
-  // final String _path;
-  // @override
-  // String get path => _path;
-  // @override
-  // String get fullInfo => _fullInfo;
-  // String _fullInfo;
-  //如果是文件夹才有该属性，表示它包含的项目数
-  // String itemsNumber = '';
-  Future<List<FileEntity>> listAndSortForWin() async {
+
+  // 默认实现
+  AbstractDirectory get parent =>
+      AbstractDirectory.getPlatformDirectory(FileSystemEntity.parentOf(path));
+
+  //
+  Future<List<FileEntity>> listAndSort({
+    bool verbose = false,
+  });
+
+  int fileNodeCompare(FileEntity a, FileEntity b) {
+    if (a.isFile && !b.isFile) {
+      return 1;
+    }
+    if (!a.isFile && b.isFile) {
+      return -1;
+    }
+    return a.path.toLowerCase().compareTo(b.path.toLowerCase());
+  }
+
+  @override
+  String toString() {
+    return 'path : $path';
+  }
+}
+
+class NiDirectoryWin extends AbstractDirectory with NiProcessBased {
+  NiDirectoryWin(String path, [String fullPath]) : super(path, fullPath);
+
+  @override
+  Future<List<FileEntity>> listAndSort({
+    bool verbose = false,
+  }) async {
     final List<FileEntity> _fileNodes = <FileEntity>[];
-    _fileNodes.add(NiDirectory(path + Platform.pathSeparator + '..'));
+    _fileNodes.add(AbstractDirectory.getPlatformDirectory(
+        path + Platform.pathSeparator + '..'));
     for (final FileSystemEntity fileSystemEntity
         in Directory(path).listSync()) {
       if (fileSystemEntity is Directory) {
-        _fileNodes.add(NiDirectory(fileSystemEntity.path));
+        _fileNodes
+            .add(AbstractDirectory.getPlatformDirectory(fileSystemEntity.path));
       } else {
-        _fileNodes.add(NiFile(fileSystemEntity.path, ''));
+        _fileNodes
+            .add(AbstractNiFile.getPlatformFile(fileSystemEntity.path, ''));
       }
     }
     return _fileNodes;
   }
+}
 
-  NiDirectory get parent => NiDirectory(FileSystemEntity.parentOf(path));
+class NiDirectoryLinux extends AbstractDirectory with NiProcessBased {
+  NiDirectoryLinux(String path, [String fullInfo]) : super(path, fullInfo);
+
+  @override
   Future<List<FileEntity>> listAndSort({
     bool verbose = false,
   }) async {
-    // if (Platform.isWindows) {
-    //   return await listAndSortForWin();
-    // }
     final List<FileEntity> _fileNodes = <FileEntity>[];
 
     // --------------------------------------
@@ -151,7 +182,7 @@ class NiDirectory extends FileEntity {
       return element.endsWith(' ..');
     });
     if (currentIndex == -1) {
-      _fileNodes.add(NiDirectory('..'));
+      _fileNodes.add(AbstractDirectory.getPlatformDirectory('..'));
     }
     if (verbose) {
       print('currentIndex-->$currentIndex');
@@ -171,12 +202,12 @@ class NiDirectory extends FileEntity {
         for (int i = 0; i < _fullmessage.length; i++) {
           FileEntity fileEntity;
           if (_fullmessage[i].startsWith(RegExp('-|l'))) {
-            fileEntity = NiFile(
+            fileEntity = AbstractNiFile.getPlatformFile(
               path + _fullmessage[i].substring(_startIndex),
               _fullmessage[i],
             );
           } else {
-            fileEntity = NiDirectory.initWithFullInfo(
+            fileEntity = AbstractDirectory.getPlatformDirectory(
               path + _fullmessage[i].substring(_startIndex),
               _fullmessage[i],
             );
@@ -187,12 +218,12 @@ class NiDirectory extends FileEntity {
         for (int i = 0; i < _fullmessage.length; i++) {
           FileEntity fileEntity;
           if (_fullmessage[i].startsWith(RegExp('-|l'))) {
-            fileEntity = NiFile(
+            fileEntity = AbstractNiFile.getPlatformFile(
               '$path/' + _fullmessage[i].substring(_startIndex),
               _fullmessage[i],
             );
           } else {
-            fileEntity = NiDirectory.initWithFullInfo(
+            fileEntity = AbstractDirectory.getPlatformDirectory(
               '$path/' + _fullmessage[i].substring(_startIndex),
               _fullmessage[i],
             );
@@ -204,23 +235,5 @@ class NiDirectory extends FileEntity {
 
     _fileNodes.sort((FileEntity a, FileEntity b) => fileNodeCompare(a, b));
     return _fileNodes;
-  }
-
-  /* */
-//文件节点的比较，文件夹在上面
-  int fileNodeCompare(FileEntity a, FileEntity b) {
-    //在遵循文件夹在上的条件下且按文件名排序
-    if (a.isFile && !b.isFile) {
-      return 1;
-    }
-    if (!a.isFile && b.isFile) {
-      return -1;
-    }
-    return a.path.toLowerCase().compareTo(b.path.toLowerCase());
-  }
-
-  @override
-  String toString() {
-    return 'path : $path';
   }
 }
