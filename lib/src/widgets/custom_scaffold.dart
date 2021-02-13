@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:global_repository/global_repository.dart';
 
@@ -19,7 +20,7 @@ class NiScaffold extends StatefulWidget {
 class _NiScaffoldState extends State<NiScaffold> {
   @override
   Widget build(BuildContext context) {
-    final bool isMobile = PlatformUtil.isMobilePhone();
+    final bool isMobile = !kIsWeb && PlatformUtil.isMobilePhone();
     return Scaffold(
       appBar: widget.appBar,
       backgroundColor: Colors.white,

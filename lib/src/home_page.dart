@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:file_manager/src/page/file_manager_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -81,9 +82,9 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
       curController = _controllers.first;
     }
     return Scaffold(
-      drawer: PlatformUtil.isMobilePhone()
-          ? FileManagerDrawer(controller: curController)
-          : null,
+      // drawer: PlatformUtil.isMobilePhone()
+      //     ? FileManagerDrawer(controller: curController)
+      //     : null,
       backgroundColor: Colors.white,
       body: Builder(
         builder: (BuildContext context) {
@@ -94,8 +95,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
               //     controller: curController,
               //   ),
               SizedBox(
-                width: MediaQuery.of(context).size.width -
-                    (PlatformUtil.isMobilePhone() ? 0.0 : 300),
+                width: MediaQuery.of(context).size.width,
                 child: Stack(
                   children: <Widget>[
                     buildBody(context),
@@ -317,8 +317,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
 
   Future<void> initHomePage() async {
     // 先初始化配置文件，因为要用很多平台路径
-    await Config.initConfig();
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       // 头部的pageview跟随
       // 滑动底栏即可滑动主页
       _pageController.addListener(() {
@@ -338,23 +337,26 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
 
   //软件将页面路径的列表以换行符分割保存进了储存
   Future<void> getHistoryPaths() async {
+    // if (kIsWeb) {
+    //   return;
+    // }
     String temp = '';
-    final File historyFile = File(
-      '${Config.filesPath}/FileManager/History_Path',
-    );
-    if (historyFile.existsSync()) {
-      try {
-        temp = await historyFile.readAsString();
-      } catch (e) {
-        print(e);
-      }
-    } else {
-      if (Platform.isAndroid)
-        temp = '/storage/emulated/0';
-      else {
-        temp = Global.instance.doucumentDir;
-      }
+    // final File historyFile = File(
+    //   '${Config.filesPath}/FileManager/History_Path',
+    // );
+    // if (historyFile.existsSync()) {
+    //   try {
+    //     temp = await historyFile.readAsString();
+    //   } catch (e) {
+    //     print(e);
+    //   }
+    // } else {
+    if (kIsWeb || Platform.isAndroid)
+      temp = '/storage/emulated/0';
+    else {
+      temp = Global.instance.doucumentDir;
     }
+    // }
     temp.trim().split('\n').forEach((element) {
       _controllers.add(FileManagerController(element));
     });
@@ -539,8 +541,8 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
                           deletePageCall: deletePage,
                           addNewPageCall: () async {
                             Navigator.of(context).pop();
-                            print(
-                                'PlatformUtil.documentsDir->${Global.instance.doucumentDir}');
+                            // print(
+                            //     'PlatformUtil.documentsDir->${Global.instance.doucumentDir}');
                             addNewPage(Global.instance.doucumentDir);
                           },
                         ),

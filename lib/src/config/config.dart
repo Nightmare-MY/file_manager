@@ -1,25 +1,34 @@
-import 'dart:io';
+import 'global.dart';
 
-import 'package:file_manager/src/provider/file_manager_notifier.dart';
-import 'package:global_repository/global_repository.dart';
-
+// 要改，获取路径的唯一变量是包名，根据平台返回路径
 class Config {
-  Config();
-  // 使用前一定先初始化
-  static Future<void> initConfig() async {
-    packageName = PlatformUtil.packageName;
-    if (!Directory(frameworkPath).existsSync()) {
-      Directory(frameworkPath).create(
-        recursive: true,
-      );
-    }
-  }
+  Config._();
+  static String baseURL =
+      inProduction ? 'http://nightmare.fun:9000' : 'http://nightmare.fun:9000';
+  static String apiKey = 'Y29tLm5pZ2h0bWFyZQ==';
+  static String basicAuth =
+      'Basic Y29tLm5pZ2h0bWFyZS50ZXJtYXJlOmNvbS5uaWdodG1hcmU=';
+  static String dataBasePath = '$dataPath/databases';
+  static String dbPath = '$dataPath/databases/user.db';
+  static String binPath = '$usrPath/bin';
+  static String filesPath = '$dataPath/files';
+  static String initFilePath = '$dataPath/files/init';
+  static String usrPath = '$dataPath/files/usr';
+  static String homePath = '$dataPath/files/home';
+  static String tmpPath = '$usrPath/tmp';
+  static String busyboxPath = '$binPath/busybox';
+  static String bashPath = '$binPath/bash';
+  static const String appName = 'YanTool';
+  static String dataPath = '/data/data/$packageName';
 
-  static String packageName;
-  static String appName = 'FileManager';
-  static String binPath = PlatformUtil.getBinaryPath();
-  static String filesPath = PlatformUtil.getDataPath();
-  static String dataPath = PlatformUtil.getDataPath() + appName;
+  /// debug开关，上线需要关闭
+  /// App运行在Release环境时，inProduction为true；当App运行在Debug和Profile环境时，inProduction为false
+  static const bool inProduction = bool.fromEnvironment('dart.vm.product');
+  static const bool isTest = false;
+  static const int versionCode = 75; //防止工具箱被反编译更改版本
+  static const String version = '2.1.5-7d2b9be8'; //防止工具箱被反编译更改版本
+  static const String packageName = 'com.nightmare.termare';
+
   static String aaptPath = '$dataPath/aapt';
   static String frameworkPath = dataPath + '/Framework';
 }

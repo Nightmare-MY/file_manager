@@ -1,5 +1,6 @@
 import 'package:event_bus/event_bus.dart';
 import 'package:file_manager/src/provider/file_manager_notifier.dart';
+import 'package:flutter/foundation.dart';
 import 'package:global_repository/global_repository.dart';
 
 class Global {
@@ -21,6 +22,8 @@ class Global {
 
   Clipboards clipboards;
   Future<void> initGlobal() async {
-    doucumentDir = await PlatformUtil.getDocumentDirectory();
+    if (!kIsWeb) {
+      doucumentDir = await PlatformUtil.getDocumentDirectory();
+    }
   }
 }

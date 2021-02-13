@@ -38,33 +38,27 @@ class FileManager extends StatelessWidget {
   }) async {
     NiToast.initContext(context);
     final String documentDir = await PlatformUtil.getDocumentDirectory();
+    Global.instance.clipboards = Clipboards();
     return await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) {
           // SafeArea;
-          return MultiProvider(
-            providers: [
-              ChangeNotifierProvider<Clipboards>(
-                create: (_) => Clipboards(),
+          return Theme(
+            data: Theme.of(context).copyWith(
+              appBarTheme: const AppBarTheme(
+                color: Colors.white,
+                elevation: 0.0,
               ),
-            ],
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                appBarTheme: const AppBarTheme(
-                  color: Colors.white,
-                  elevation: 0.0,
-                ),
+            ),
+            child: Scaffold(
+              appBar: AppBar(
+                centerTitle: true,
+                title: const Text('选择文件'),
               ),
-              child: Scaffold(
-                appBar: AppBar(
-                  centerTitle: true,
-                  title: const Text('选择文件'),
-                ),
-                body: FileManagerView(
-                  chooseFile: true,
-                  controller: FileManagerController(
-                    pickPath ?? '$documentDir/YanTool/Rom',
-                  ),
+              body: FileManagerView(
+                chooseFile: true,
+                controller: FileManagerController(
+                  pickPath ?? '$documentDir/YanTool/Rom',
                 ),
               ),
             ),

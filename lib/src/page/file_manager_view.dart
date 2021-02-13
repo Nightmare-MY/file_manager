@@ -123,7 +123,7 @@ class _FileManagerViewState extends State<FileManagerView>
     widget.controller.addListener(controllerCallback);
     _currentdirectory =
         widget.controller.dirPath ?? Global.instance.doucumentDir;
-    // print('_currentdirectory->$_currentdirectory');
+    print('_currentdirectory->$_currentdirectory');
     _getFileNodes(_currentdirectory);
   }
 
@@ -143,9 +143,11 @@ class _FileManagerViewState extends State<FileManagerView>
   }
 
   Future<void> _getFileNodes(String path, {void Function() afterSort}) async {
+    print('_getFileNodes');
     // 获取文件列表和刷新页面
     _fileNodes =
         await AbstractDirectory.getPlatformDirectory(path).listAndSort();
+    print('_getFileNodes后');
     setState(() {});
     // 在一次获取后异步更新文件节点的其他参数，这个过程是非常快的
     getNodeFullArgs();
