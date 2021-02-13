@@ -512,8 +512,8 @@ class _FileItemState extends State<FileItem>
     final String currentFileName =
         _tmp.first.split('/').last.toString(); //取前面那个就没错
     // /bin -> /system/bin
-    print(
-        'widget.fileNode->${widget.fileNode.runtimeType} ${widget.fileNode.isFile}');
+    // print(
+    //     'widget.fileNode->${widget.fileNode.runtimeType} ${widget.fileNode.isFile}');
     final Widget _iconData = getWidgetFromExtension(
       widget.fileNode,
       context,

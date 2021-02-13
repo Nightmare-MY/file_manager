@@ -277,8 +277,13 @@ class NiDirectoryWeb extends AbstractDirectory with NiProcessBased {
       // PrintUtil.printn('--------- lsOut ------------', 31, 47);
     }
     // 删除第一行 -> total xxx
-    print('删除第一行 -> total xxx');
-    _fullmessage = lsOut.split('\n')..removeAt(0);
+    String a = lsOut;
+    // print('删除第一行 -> total xxx');
+    print('object'.split(''));
+    print('lsOut'.split(''));
+    print(lsOut.split(''));
+    _fullmessage = lsOut.split("\n")..removeAt(0);
+    print(_fullmessage);
     // ------------------------------------------------------------------------
     // ------------------------- 不要动这段代码，阿弥陀佛。-------------------------
     // linkFileNode 是当前文件节点有符号链接的情况。
@@ -422,17 +427,18 @@ Future<String> getResultFromServer(String cmdline) async {
   //   'http://127.0.0.1:8001',
   // );
   try {
-    final Response response = await Dio().get<void>('http://127.0.0.1:8002',
-        options: Options(
-          method: 'POST',
-          headers: <String, dynamic>{
-            'cmdline': cmdline,
-          },
-        ));
-    print(response);
+    final Response<String> response =
+        await Dio().get<String>('http://127.0.0.1:8001',
+            options: Options(
+              method: 'POST',
+              headers: <String, dynamic>{
+                'cmdline': cmdline,
+              },
+            ));
+    return response.data;
+    // print(response);
   } catch (e) {
     print('error ->$e');
   }
   // print('result -> $result');
-  // return result.data;
 }
