@@ -19,6 +19,8 @@ import '../io/file.dart';
 import 'text_edit.dart';
 import 'widget/file_item_suffix.dart';
 
+import 'package:path/path.dart' as path;
+
 Directory appDocDir;
 
 typedef PathCallback = Future<void> Function(String path);
@@ -170,7 +172,7 @@ class _FileManagerViewState extends State<FileManagerView>
       //清除所有已选择
       // fiMaPageNotifier.removeAllCheck();
       //如果点了两个点的默认始终返上级目录
-      final String backpath = Directory(_currentdirectory).parent.path; //
+      final String backpath = parentOf(_currentdirectory); //
       _currentdirectory = backpath;
       _getFileNodes(_currentdirectory, afterSort: () async {
         repeatAnima();
@@ -298,6 +300,7 @@ class _FileManagerViewState extends State<FileManagerView>
         fileNode.modified = '${infos[3]}  ${infos[4]}';
         if (fileNode.isFile) {
           fileNode.size = FileSizeUtils.getFileSizeFromStr(infos[2]);
+          // print('fileNode.size ->${fileNode.size}');
         } else {
           fileNode.itemsNumber = '${infos[1]}项';
         }
@@ -673,5 +676,23 @@ Widget getWidgetFromExtension(FileEntity fileNode, BuildContext context,
       height: 20.0,
       color: Theme.of(context).iconTheme.color,
     );
+  }
+}
+
+final RegExp _parentRegExp = RegExp(r'[^/]/+[^/]');
+String parentOf(String path) {
+  int rootEnd = -1;
+  if (path.startsWith('/')) {
+    rootEnd = 0;
+  }
+  // Ignore trailing slashes.
+  // All non-trivial cases have separators between two non-separators.
+  int pos = path.lastIndexOf(_parentRegExp);
+  if (pos > rootEnd) {
+    return path.substring(0, pos + 1);
+  } else if (rootEnd > -1) {
+    return path.substring(0, rootEnd + 1);
+  } else {
+    return '.';
   }
 }

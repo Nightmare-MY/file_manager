@@ -277,12 +277,8 @@ class NiDirectoryWeb extends AbstractDirectory with NiProcessBased {
       // PrintUtil.printn('--------- lsOut ------------', 31, 47);
     }
     // 删除第一行 -> total xxx
-    String a = lsOut;
     // print('删除第一行 -> total xxx');
-    print('object'.split(''));
-    print('lsOut'.split(''));
-    print(lsOut.split(''));
-    _fullmessage = lsOut.split("\n")..removeAt(0);
+    _fullmessage = lsOut.split('\n')..removeAt(0);
     print(_fullmessage);
     // ------------------------------------------------------------------------
     // ------------------------- 不要动这段代码，阿弥陀佛。-------------------------
