@@ -27,7 +27,7 @@ abstract class AbstractDirectory extends FileEntity {
     else if (Platform.isMacOS) {
       return NiDirectoryWeb(path, fullInfo);
     } else if (Platform.isAndroid) {
-      return NiDirectoryWeb(path, fullInfo);
+      return NiDirectoryLinux(path, fullInfo);
     }
     return NiDirectoryLinux(path, fullInfo);
   }
