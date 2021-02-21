@@ -1,4 +1,4 @@
-import 'package:file_manager/src/io/file_entity.dart';
+import 'package:file_manager/src/io/src/file_entity.dart';
 import 'package:flutter/material.dart';
 
 enum ClipType {

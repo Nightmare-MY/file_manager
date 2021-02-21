@@ -6,6 +6,7 @@ typedef AddNewPageCall = Future<void> Function();
 typedef DeletePageCall = Future<void> Function(int index);
 typedef ChangePageCall = void Function(int index);
 
+// 点击右上角页面弹起的窗口选择页面
 class PageChoose extends StatefulWidget {
   const PageChoose({
     Key key,
@@ -36,7 +37,7 @@ class _PageChooseState extends State<PageChoose> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0x00f7f7f7),
+      backgroundColor: Colors.transparent,
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () {
@@ -79,25 +80,26 @@ class _PageChooseState extends State<PageChoose> {
                             child: Stack(
                               alignment: Alignment.center,
                               children: <Widget>[
-                                // AbsorbPointer(
-                                //   child: ClipRRect(
-                                //       borderRadius: BorderRadius.circular(8),
-                                //       child: MediaQuery(
-                                //         data: MediaQueryData(
-                                //           size: Size(
-                                //             MediaQuery.of(context).size.width /
-                                //                 1.5,
-                                //             MediaQuery.of(context).size.height /
-                                //                 2,
-                                //           ),
-                                //         ),
-                                //         child: FileManagerView(
-                                //           chooseFile: true,
-                                //           key: GlobalObjectKey('FMZ$index'),
-                                //           initpath: widget.paths[index],
-                                //         ),
-                                //       )),
-                                // ),
+                                AbsorbPointer(
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: MediaQuery(
+                                        data: MediaQueryData(
+                                          size: Size(
+                                            MediaQuery.of(context).size.width /
+                                                1.5,
+                                            MediaQuery.of(context).size.height /
+                                                2,
+                                          ),
+                                        ),
+                                        child: FileManagerView(
+                                          controller: widget.controllers[index],
+                                          chooseFile: true,
+                                          key: GlobalObjectKey('FMZ$index'),
+                                          // initpath: widget.paths[index],
+                                        ),
+                                      )),
+                                ),
                                 SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width / 1.5,

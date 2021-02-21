@@ -9,7 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import '../colors/file_colors.dart';
 import '../file_manager.dart';
 import '../utils/bookmarks.dart';
-import 'setting.dart';
+import 'setting_page.dart';
 
 class FileManagerDrawer extends StatefulWidget {
   const FileManagerDrawer({
@@ -55,19 +55,19 @@ class _FileManagerDrawerState extends State<FileManagerDrawer>
     }
     final List<String> infos = result.split('\n');
     for (final String line in infos) {
-      // if (line.endsWith('/')) {
-      //   rootInfo = line.split(RegExp(r'\s{1,}'));
-      //   rootAnima = Tween<double>(
-      //     begin: 0,
-      //     end: int.parse(rootInfo[2]) / int.parse(rootInfo[1]),
-      //   ).animate(
-      //     CurvedAnimation(
-      //       curve: Curves.ease,
-      //       parent: controller,
-      //     ),
-      //   );
-      //   setState(() {});
-      // }
+      if (line.endsWith('/')) {
+        rootInfo = line.split(RegExp(r'\s{1,}'));
+        rootAnima = Tween<double>(
+          begin: 0,
+          end: int.parse(rootInfo[2]) / int.parse(rootInfo[1]),
+        ).animate(
+          CurvedAnimation(
+            curve: Curves.ease,
+            parent: controller,
+          ),
+        );
+        setState(() {});
+      }
       if (line.endsWith('/storage/emulated')) {
         sdcardInfo = line.split(RegExp(r'\s{1,}'));
         sdcardAnima = Tween<double>(

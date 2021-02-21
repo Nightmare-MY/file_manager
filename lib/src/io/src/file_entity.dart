@@ -1,3 +1,4 @@
+import 'package:file_manager/src/io/file_io.dart';
 import 'package:global_repository/global_repository.dart';
 
 import 'directory.dart';
@@ -23,7 +24,7 @@ abstract class FileEntity {
   String gid = '';
 
   String get nodeName;
-
+  String get parentPath => parentOf(path);
   bool get isFile => this is AbstractNiFile;
   bool get isDirectory => this is AbstractDirectory;
   static final List<String> imagetype = <String>['jpg', 'png']; //图片的所有扩展名
@@ -35,17 +36,15 @@ abstract class FileEntity {
     'sh',
     'dart'
   ]; //文本的扩展名
-  static bool isText(FileEntity fileNode) {
-    final String type = fileNode.nodeName.replaceAll(RegExp('.*\\.'), '');
+  bool isText() {
+    final String type = nodeName.replaceAll(RegExp('.*\\.'), '');
     return textType.contains(type);
   }
 
-  @override
-  int get hashCode => path.hashCode;
-  static bool isImg(FileEntity fileNode) {
+  bool isImg() {
     // Directory();
     // File
-    final String type = fileNode.nodeName.replaceAll(RegExp('.*\\.'), '');
+    final String type = nodeName.replaceAll(RegExp('.*\\.'), '');
     return imagetype.contains(type);
   }
 
@@ -53,10 +52,20 @@ abstract class FileEntity {
   String get info => '$modified  $itemsNumber  $size  $mode';
 
   @override
-  bool operator ==(Object other) {
-    return super == other;
+  bool operator ==(dynamic other) {
+    // 判断是否是非
+    if (other is! FileEntity) {
+      return false;
+    }
+    if (other is FileEntity) {
+      final FileEntity entity = other;
+      return path == entity.path;
+    }
+    return false;
   }
 
+  @override
+  int get hashCode => path.hashCode;
   Future<bool> delete() {
     throw UnimplementedError();
   }
@@ -69,7 +78,7 @@ abstract class FileEntity {
     throw UnimplementedError();
   }
 
-  Future<bool> rename(AbstractNiFile name) {
+  Future<bool> rename(String name) {
     throw UnimplementedError();
   }
 }

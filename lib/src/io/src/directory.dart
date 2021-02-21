@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:custom_log/custom_log.dart';
 import 'package:dio/dio.dart';
+import 'package:file_manager/src/io/file_io.dart';
 import 'package:file_manager/src/utils/http/http.dart';
 import 'package:flutter/foundation.dart';
 import 'package:global_repository/global_repository.dart';
@@ -8,6 +10,12 @@ import 'package:global_repository/global_repository.dart';
 import 'file.dart';
 import 'file_entity.dart';
 import 'file_entity.dart';
+
+AbstractDirectory getPlatformDirectory(
+  String path, [
+  String fullInfo,
+]) =>
+    AbstractDirectory.getPlatformDirectory(path, fullInfo);
 
 abstract class AbstractDirectory extends FileEntity {
   AbstractDirectory(String path, [String fullInfo]) {
@@ -37,9 +45,7 @@ abstract class AbstractDirectory extends FileEntity {
       AbstractDirectory.getPlatformDirectory(FileSystemEntity.parentOf(path));
 
   //
-  Future<List<FileEntity>> listAndSort({
-    bool verbose = false,
-  });
+  Future<List<FileEntity>> listAndSort();
 
   int fileNodeCompare(FileEntity a, FileEntity b) {
     if (a.isFile && !b.isFile) {
@@ -85,9 +91,7 @@ class NiDirectoryLinux extends AbstractDirectory with NiProcessBased {
   NiDirectoryLinux(String path, [String fullInfo]) : super(path, fullInfo);
 
   @override
-  Future<List<FileEntity>> listAndSort({
-    bool verbose = true,
-  }) async {
+  Future<List<FileEntity>> listAndSort() async {
     final List<FileEntity> _fileNodes = <FileEntity>[];
 
     // --------------------------------------
@@ -104,12 +108,10 @@ class NiDirectoryLinux extends AbstractDirectory with NiProcessBased {
     final String lsOut = await NiProcess.exec(
       '$lsPath -aog "${PlatformUtil.getUnixPath(path)}"\n',
     );
-    if (verbose) {
-      PrintUtil.printn('--------- lsOut ------------', 31, 47);
+    if (enableIOVerbose) {
       lsOut.split('\n').forEach((element) {
-        PrintUtil.printn(element, 31, 47);
+        Log.d(element);
       });
-      // PrintUtil.printn('--------- lsOut ------------', 31, 47);
     }
     // 删除第一行 -> total xxx
     _fullmessage = lsOut.split('\n')..removeAt(0);
@@ -129,7 +131,7 @@ class NiDirectoryLinux extends AbstractDirectory with NiProcessBased {
         }
       }
     }
-    if (verbose) {
+    if (enableIOVerbose) {
       // PrintUtil.printn('------------ linkFileNode ------------', 35, 47);
       linkFileNode.split('\n').forEach((element) {
         // PrintUtil.printn(element, 35, 47);
@@ -146,7 +148,7 @@ class NiDirectoryLinux extends AbstractDirectory with NiProcessBased {
       final List<String> linkFileNodes =
           lsOut.replaceAll('//', '/').split('\n');
 
-      if (verbose) {
+      if (enableIOVerbose) {
         print('====>$linkFileNodes');
       }
       // 文件名到文件类型的 map
@@ -159,13 +161,13 @@ class NiDirectoryLinux extends AbstractDirectory with NiProcessBased {
         print('key->$key');
         map[key] = str.substring(0, 1);
       }
-      if (verbose) {
+      if (enableIOVerbose) {
         print('====>$map');
       }
       for (int i = 0; i < _fullmessage.length; i++) {
         final String linkFromFile = _fullmessage[i].split(' -> ').last;
 
-        if (verbose) {
+        if (enableIOVerbose) {
           print('linkFromFile====>$linkFromFile');
         }
         print('map.keys->${map.keys}');
@@ -180,7 +182,7 @@ class NiDirectoryLinux extends AbstractDirectory with NiProcessBased {
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
 
-    if (verbose) {
+    if (enableIOVerbose) {
       print(_fullmessage);
     }
     _fullmessage.removeWhere((String element) {
@@ -194,7 +196,7 @@ class NiDirectoryLinux extends AbstractDirectory with NiProcessBased {
     if (currentIndex == -1) {
       _fileNodes.add(AbstractDirectory.getPlatformDirectory('..'));
     }
-    if (verbose) {
+    if (enableIOVerbose) {
       print('currentIndex-->$currentIndex');
     }
     // ls 命令输出有空格上的对齐，不能用 list.split 然后以多个空格分开的方式来解析数据
@@ -204,7 +206,7 @@ class NiDirectoryLinux extends AbstractDirectory with NiProcessBased {
         RegExp(':[0-9][0-9] '),
       ); //获取文件名开始的地址
       _startIndex += 4;
-      if (verbose) {
+      if (enableIOVerbose) {
         print('startIndex===>>>$_startIndex');
       }
       if (path == '/') {
@@ -424,7 +426,7 @@ Future<String> getResultFromServer(String cmdline) async {
   // );
   try {
     final Response<String> response =
-        await Dio().get<String>('http://127.0.0.1:8001',
+        await Dio().get<String>('http://192.168.244.137:8000',
             options: Options(
               method: 'POST',
               headers: <String, dynamic>{
@@ -435,6 +437,7 @@ Future<String> getResultFromServer(String cmdline) async {
     // print(response);
   } catch (e) {
     print('error ->$e');
+    return '';
   }
   // print('result -> $result');
 }

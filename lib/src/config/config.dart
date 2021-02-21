@@ -27,7 +27,7 @@ class Config {
   static const bool isTest = false;
   static const int versionCode = 75; //防止工具箱被反编译更改版本
   static const String version = '2.1.5-7d2b9be8'; //防止工具箱被反编译更改版本
-  static const String packageName = 'com.nightmare.termare';
+  static const String packageName = 'com.nightmare.file_manager_example';
 
   static String aaptPath = '$dataPath/aapt';
   static String frameworkPath = dataPath + '/Framework';

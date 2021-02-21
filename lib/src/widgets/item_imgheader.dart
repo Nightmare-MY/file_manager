@@ -3,11 +3,11 @@ import 'dart:typed_data';
 
 import 'dart:ui' as ui;
 import 'package:file_manager/src/config/config.dart';
-import 'package:file_manager/src/io/file.dart';
+import 'package:file_manager/src/io/src/file.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../io/file.dart';
+import '../io/src/file.dart';
 
 class ItemImgHeader extends StatefulWidget {
   const ItemImgHeader({Key key, this.fileNode}) : super(key: key);

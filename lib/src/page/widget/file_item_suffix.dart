@@ -1,13 +1,13 @@
 import 'package:file_manager/src/dialog/apktool_dialog.dart';
 import 'package:file_manager/src/dialog/apktool_encode_dialog.dart';
-import 'package:file_manager/src/io/directory.dart';
-import 'package:file_manager/src/io/file.dart';
-import 'package:file_manager/src/io/file_entity.dart';
+import 'package:file_manager/src/io/src/directory.dart';
+import 'package:file_manager/src/io/src/file.dart';
+import 'package:file_manager/src/io/src/file_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:global_repository/global_repository.dart';
 
-import '../../io/directory.dart';
-import '../../io/file.dart';
+import '../../io/src/directory.dart';
+import '../../io/src/file.dart';
 
 class FileItemSuffix extends StatelessWidget {
   const FileItemSuffix({Key key, this.fileNode}) : super(key: key);

@@ -1,11 +1,11 @@
 import 'dart:io';
 
 // import 'package:extended_text_field/extended_text_field.dart';
-import 'package:file_manager/src/io/file.dart';
+import 'package:file_manager/src/io/src/file.dart';
 import 'package:flutter/material.dart' hide TextField, TextEditingController;
 import 'package:flutter/material.dart';
 
-import '../io/file.dart';
+import '../io/src/file.dart';
 // import 'package:flutter_toolkit/widgets/text_field/editable_text.dart';
 // import 'package:flutter_toolkit/widgets/text_field/custom_editable_text.dart';
 // import 'package:flutter_toolkit/widgets/text_field/text_field.dart';

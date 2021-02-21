@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:file_manager/src/config/config.dart';
 import 'package:file_manager/src/config/global.dart';
-import 'package:file_manager/src/io/file_entity.dart';
+import 'package:file_manager/src/io/src/file_entity.dart';
 import 'package:file_manager/src/page/file_manager_controller.dart';
 import 'package:file_manager/src/provider/file_manager_notifier.dart';
 import 'package:flutter/material.dart';
@@ -17,21 +17,12 @@ import '../colors/file_colors.dart';
 class LongPressDialog extends StatefulWidget {
   const LongPressDialog({
     Key key,
-    // TODO 垃圾代码
-    this.initpage0,
-    this.initpage1,
-    this.callback,
     this.fileNode,
-    this.fiMaPageNotifier,
     @required this.controller,
   }) : super(key: key);
 
   final FileManagerController controller;
   final FileEntity fileNode;
-  final int initpage0; //显示特殊列表还是普通
-  final int initpage1; //显示特殊列表中的某一个
-  final void Function() callback;
-  final Clipboards fiMaPageNotifier;
 
   @override
   _LongPressDialogState createState() => _LongPressDialogState();
@@ -47,7 +38,7 @@ class _LongPressDialogState extends State<LongPressDialog> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: widget.initpage0)
+    _pageController = PageController(initialPage: 0)
       ..addListener(() {
         if (_pageController.page > 0.5) {
           DialogBuilder.changeHeight(80);
@@ -153,7 +144,7 @@ class _LongPressDialogState extends State<LongPressDialog> {
   }
 
   Widget deleteWidget() {
-    final Clipboards fiMaPageNotifier = widget.fiMaPageNotifier;
+    final Clipboards fiMaPageNotifier = Global().clipboards;
     List<FileEntity> _nodes = fiMaPageNotifier.checkNodes;
     if (_nodes.isEmpty) {
       _nodes = <FileEntity>[widget.fileNode];
@@ -203,7 +194,7 @@ class _LongPressDialogState extends State<LongPressDialog> {
                         await NiProcess.exec('rm -rf ${node.path}\n');
                       }
                       NiToast.showToast('已删除');
-                      widget.controller.notifyListeners();
+                      widget.controller.updateFileNodes();
                       Navigator.of(context).pop();
                     },
                   ),
@@ -281,19 +272,9 @@ class _LongPressDialogState extends State<LongPressDialog> {
                     ),
                   ),
                   onPressed: () async {
-                    // String newpath =
-                    //     widget.nodePath.replaceAll(widget.title, '') +
-                    //         controller.text;
-                    // if (FileSystemEntity.isFileSync(widget.nodePath))
-                    //   await File(widget.nodePath).rename(newpath);
-                    // else
-                    //   await Directory(widget.nodePath).rename(newpath);
-                    final String parentPath =
-                        File(widget.fileNode.path).parent.path;
-                    // await execShell(ToolkitInfo.isRoot,
-                    //     'mv ${widget.fileNode.path} $parentPath/${controller.text}');
+                    await widget.fileNode.rename(controller.text);
+                    widget.controller.updateFileNodes();
                     Navigator.of(context).pop();
-                    widget.callback();
                   },
                 ),
               ],
@@ -357,8 +338,8 @@ class _LongPressDialogState extends State<LongPressDialog> {
   }
 
   Widget defaultWidget() {
-    final Clipboards fiMaPageNotifier = Global.instance.clipboards;
-    List<FileEntity> _nodes = fiMaPageNotifier.checkNodes;
+    final Clipboards clipboards = Global.instance.clipboards;
+    List<FileEntity> _nodes = clipboards.checkNodes;
     if (_nodes.isEmpty) {
       _nodes = <FileEntity>[widget.fileNode];
     }
@@ -384,9 +365,8 @@ class _LongPressDialogState extends State<LongPressDialog> {
           // }),
           item('复制', Icons.content_copy, () async {
             for (final FileEntity node in _nodes) {
-              fiMaPageNotifier.addClipBoard(ClipType.Copy, node.path);
+              clipboards.addClipBoard(ClipType.Copy, node.path);
             }
-            fiMaPageNotifier.clearCheck();
             Navigator.of(context).pop();
             // showToast2('已添加至剪切板');
           }),

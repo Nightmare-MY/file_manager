@@ -19,7 +19,10 @@ dependencies:
   shelf_proxy: ^0.1.0+7
   # 可拖拽的ListView
   # svg图像
-
+  custom_log:
+    git:
+      url: https://github.com/nightmare-space/custom_log
+      ref: dart
   provider: 5.0.0-nullsafety.3
   flutter_svg: 0.20.0-nullsafety.3
 

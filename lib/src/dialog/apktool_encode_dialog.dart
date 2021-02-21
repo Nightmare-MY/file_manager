@@ -2,11 +2,11 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:file_manager/src/config/config.dart';
-import 'package:file_manager/src/io/directory.dart';
+import 'package:file_manager/src/io/src/directory.dart';
 import 'package:flutter/material.dart';
 import 'package:global_repository/global_repository.dart';
 
-import '../io/directory.dart';
+import '../io/src/directory.dart';
 import 'adb_install_page.dart';
 import 'apktool_exec_page.dart';
 

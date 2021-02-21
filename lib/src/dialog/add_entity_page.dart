@@ -1,3 +1,4 @@
+import 'package:file_manager/src/page/file_manager_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:global_repository/global_repository.dart';
 
@@ -10,9 +11,9 @@ enum FileType {
 class AddEntity extends StatefulWidget {
   const AddEntity({
     Key key,
-    @required this.curDir,
+    @required this.controller,
   }) : super(key: key);
-  final String curDir;
+  final FileManagerController controller;
   @override
   _AddEntityState createState() => _AddEntityState();
 }
@@ -63,15 +64,16 @@ class _AddEntityState extends State<AddEntity> {
                       switch (fileType) {
                         case FileType.file:
                           await NiProcess.exec(
-                            'touch "${widget.curDir}/${controller.text}"',
+                            'touch "${widget.controller.dirPath}/${controller.text}"',
                           );
                           break;
                         case FileType.directory:
                           await NiProcess.exec(
-                            'mkdir "${widget.curDir}/${controller.text}"',
+                            'mkdir "${widget.controller.dirPath}/${controller.text}"',
                           );
                           break;
                       }
+                      widget.controller.updateFileNodes();
                       Navigator.pop(context);
                       // print(widget.curDir);
                     },

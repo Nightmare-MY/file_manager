@@ -11,7 +11,7 @@ import 'colors/file_colors.dart';
 import 'config/config.dart';
 import 'config/global.dart';
 import 'dialog/add_entity_page.dart';
-import 'dialog/page_choose.dart';
+import 'dialog/window_choose.dart';
 import 'file_manager.dart';
 import 'page/center_drawer.dart';
 import 'page/file_manager_drawer.dart';
@@ -30,8 +30,7 @@ class FileManagerHomePage extends StatefulWidget {
 class _FileManagerHomePageState extends State<FileManagerHomePage>
     with TickerProviderStateMixin {
   final List<FileManagerController> _controllers = [];
-  final PageController _pageController = PageController(initialPage: 0);
-  //最下面接收手势的Widget
+
   final PageController _commonController = PageController(
     initialPage: 0,
   ); //主页面切换的页面切换控制器
@@ -46,10 +45,13 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
   // 是否有储存权限
   bool hasPermission = false;
   bool pageIsInit = false;
-
+  Clipboards clipboards = Global.instance.clipboards;
   @override
   void initState() {
     super.initState();
+    clipboards.addListener(() {
+      setState(() {});
+    });
     initAnimation();
     initHomePage();
     test();
@@ -82,9 +84,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
       curController = _controllers.first;
     }
     return Scaffold(
-      // drawer: PlatformUtil.isMobilePhone()
-      //     ? FileManagerDrawer(controller: curController)
-      //     : null,
+      drawer: FileManagerDrawer(controller: curController),
       backgroundColor: Colors.white,
       body: Builder(
         builder: (BuildContext context) {
@@ -100,21 +100,6 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
                   children: <Widget>[
                     buildBody(context),
                     // 最下面的透明的 widget
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: SizedBox(
-                        height: 1.0,
-                        child: PageView.builder(
-                          controller: _pageController,
-                          itemCount: _controllers.length,
-                          itemBuilder: (BuildContext c, int i) {
-                            return Container(
-                              color: Colors.red,
-                            );
-                          },
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -147,8 +132,8 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
                     child: Theme(
                       data: Theme.of(context),
                       child: AddEntity(
-                        curDir: _controllers[_commonController.page.toInt()]
-                            .dirPath,
+                        controller:
+                            _controllers[_commonController.page.toInt()],
                       ),
                     ),
                   );
@@ -313,6 +298,9 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
         milliseconds: 300,
       ),
     );
+    pastIconAnimaController.addListener(() {
+      setState(() {});
+    });
   }
 
   Future<void> initHomePage() async {
@@ -320,16 +308,16 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
     if (!kIsWeb && Platform.isAndroid) {
       // 头部的pageview跟随
       // 滑动底栏即可滑动主页
-      _pageController.addListener(() {
-        _commonController.jumpTo(_pageController.offset);
-        currentPage = _pageController.page.toInt();
-        _titlePageController.animateToPage(
-          _pageController.page.round(),
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.linear,
-        ); //title的文件夹路径动画
-        setState(() {});
-      });
+      // _pageController.addListener(() {
+      //   _commonController.jumpTo(_pageController.offset);
+      //   currentPage = _pageController.page.toInt();
+      //   _titlePageController.animateToPage(
+      //     _pageController.page.round(),
+      //     duration: const Duration(milliseconds: 200),
+      //     curve: Curves.linear,
+      //   ); //title的文件夹路径动画
+      //   setState(() {});
+      // });
     }
     getHistoryPaths();
     // print(appDocDir);
@@ -383,24 +371,21 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
     // setStatePathFile();
   }
 
-  void changePage(int index) {
-    _pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 800),
+  void changePage(int page) {
+    _commonController.animateToPage(
+      page,
+      duration: const Duration(milliseconds: 600),
       curve: Curves.ease,
     );
   }
 
   PreferredSize buildAppBar(BuildContext context) {
-    final Clipboards fiMaPageNotifier = Clipboards();
-    // fiMaPageNotifier=
-    // if (fiMaPageNotifier.clipboard.isNotEmpty &&
-    //     pastIconAnimaController.isDismissed)
-    //   pastIconAnimaController.forward();
-    // else if (fiMaPageNotifier.clipboard.isEmpty &&
-    //     pastIconAnimaController.isCompleted) {
-    //   pastIconAnimaController.reverse();
-    // }
+    if (clipboards.checkNodes.isNotEmpty && pastIconAnimaController.isDismissed)
+      pastIconAnimaController.forward();
+    else if (clipboards.clipboard.isEmpty &&
+        pastIconAnimaController.isCompleted) {
+      pastIconAnimaController.reverse();
+    }
     //Appbar
     return PreferredSize(
       child: AppBar(

@@ -1,7 +1,6 @@
 import 'package:global_repository/global_repository.dart';
 
 import 'file_entity.dart';
-import 'file_entity.dart';
 
 abstract class AbstractNiFile extends FileEntity {
   AbstractNiFile(this._path, this._fullInfo);
@@ -22,7 +21,11 @@ abstract class AbstractNiFile extends FileEntity {
 
 class NiFileLinux extends AbstractNiFile with NiProcessBased {
   NiFileLinux(String path, String fullInfo) : super(path, fullInfo);
-
+  @override
+  Future<bool> rename(String name) async {
+    await NiProcess.exec('mv $path $parentPath/$name');
+    return true;
+  }
   // @override
   // Future<bool> delete() async {
   //   return true;

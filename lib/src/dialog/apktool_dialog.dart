@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:file_manager/src/config/config.dart';
-import 'package:file_manager/src/io/file.dart';
+import 'package:file_manager/src/io/src/file.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:global_repository/global_repository.dart';
 
-import '../io/file.dart';
-import '../io/file.dart';
+import '../io/src/file.dart';
+import '../io/src/file.dart';
 import 'apktool_exec_page.dart';
 
 class ApkToolDialog extends StatefulWidget {
