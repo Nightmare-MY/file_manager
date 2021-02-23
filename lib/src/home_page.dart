@@ -33,6 +33,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
 
   final PageController _commonController = PageController(
     initialPage: 0,
+    viewportFraction: 0.5,
   ); //主页面切换的页面切换控制器
   final PageController _titlePageController = PageController(
     initialPage: 0,
@@ -244,7 +245,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
           child: Center(
             child: SizedBox(
               height: MediaQuery.of(context).size.height,
-              child: PageView.builder(
+              child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.horizontal,
                 controller: _commonController,
@@ -259,7 +260,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
                   // }
                   matrix4 = Matrix4.identity()..scale(scale);
                   return SizedBox(
-                    width: MediaQuery.of(context).size.width,
+                    width: MediaQuery.of(context).size.width / 2,
                     child: Transform(
                       transform: matrix4,
                       alignment: Alignment.center,
@@ -340,7 +341,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
     //   }
     // } else {
     if (kIsWeb || Platform.isAndroid)
-      temp = '/storage/emulated/0';
+      temp = '/storage/emulated/0\n/storage/emulated/0';
     else {
       temp = Global.instance.doucumentDir;
     }

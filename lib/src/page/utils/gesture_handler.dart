@@ -9,7 +9,7 @@ import 'package:file_manager/src/provider/file_manager_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:global_repository/global_repository.dart';
 
-final Map<String, double> _historyOffset = <String, double>{};
+final Map<String, double> historyOffset = <String, double>{};
 void itemOnTap({
   @required FileEntity entity,
   @required FileManagerController controller,
@@ -31,13 +31,11 @@ void itemOnTap({
   } else if (!entity.isFile) {
     //如果不是文件就进入这个文件夹
     //进入文件夹前把当前文件夹浏览到的Offset保存下来
-    _historyOffset[controller.dirPath] = scrollController.offset;
+    historyOffset[controller.dirPath] = scrollController.offset;
     if (controller.dirPath == '/') {
       //是否是最顶层文件夹的
-      scrollController.jumpTo(0);
       controller.updateFileNodes('/${entity.nodeName}');
     } else {
-      scrollController.jumpTo(0);
       controller.updateFileNodes('${controller.dirPath}/${entity.nodeName}');
     }
   } else {

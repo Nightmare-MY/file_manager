@@ -102,17 +102,6 @@ class _FileManagerViewState extends State<FileManagerView>
   }
 
   void _onAfterRendering(Duration timeStamp) {
-    // final Animation curve =
-    //     CurvedAnimation(parent: _animationController, curve: Curves.ease);
-    // _opacityTween = Tween<double>(begin: 0.0, end: 1.0).animate(curve);
-    // _historyOffset.forEach((String key, double value) {
-    //   if (key == _controller.dirPath) {
-    //     _scrollController.jumpTo(value);
-    //     // _scrollController.animateTo(value,
-    //     //     duration: Duration(microseconds: 1), curve: Curves.linear);
-    //   }
-    // });
-    // _historyOffset.remove(_controller.dirPath);
     if (mounted) {
       setState(() {});
     }
@@ -132,6 +121,12 @@ class _FileManagerViewState extends State<FileManagerView>
     if (mounted) {
       setState(() {});
       getNodeFullArgs();
+      if (historyOffset.keys.contains(_controller.dirPath)) {
+        _scrollController.jumpTo(historyOffset[_controller.dirPath]);
+        historyOffset.remove(_controller.dirPath);
+      } else {
+        _scrollController.jumpTo(0);
+      }
     }
   }
 
@@ -227,7 +222,7 @@ class _FileManagerViewState extends State<FileManagerView>
         return FileItem(
           controller: _controller,
           onTap: () {
-            if (widget.chooseFile) {
+            if (widget.chooseFile && entity.isFile) {
               Navigator.pop(
                 context,
                 '${_controller.dirPath}/${entity.nodeName}',
