@@ -71,7 +71,6 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
 
   @override
   Widget build(BuildContext context) {
-    NiToast.initContext(context);
     FileManagerController curController;
 
     if (_controllers.isEmpty)
@@ -398,7 +397,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
               text: _controllers[_titlePageController.page.toInt()].dirPath,
             ));
             Feedback.forLongPress(context);
-            NiToast.showToast('已复制路径');
+            showToast('已复制路径');
           },
           child: SizedBox(
             height: 24.0,
@@ -612,7 +611,7 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
                             _controllers[_titlePageController.page.toInt()]
                                 .dirPath,
                           );
-                          NiToast.showToast('已添加');
+                          showToast('已添加');
                           // showToast2('已添加');
                         }
                         if (choose == 3) {

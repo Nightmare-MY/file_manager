@@ -36,7 +36,6 @@ class FileManager extends StatelessWidget {
     @required BuildContext context,
     String pickPath,
   }) async {
-    NiToast.initContext(context);
     final String documentDir = await PlatformUtil.getDocumentDirectory();
     Global.instance.clipboards = Clipboards();
     return await Navigator.of(context).push(

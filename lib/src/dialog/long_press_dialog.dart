@@ -82,7 +82,7 @@ class _LongPressDialogState extends State<LongPressDialog> {
       onTap: () async {
         await Clipboard.setData(ClipboardData(text: details));
         Feedback.forTap(context);
-        NiToast.showToast('已复制$name');
+        showToast('已复制$name');
       },
       child: Padding(
         padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
@@ -193,7 +193,7 @@ class _LongPressDialogState extends State<LongPressDialog> {
                       for (final FileEntity node in _nodes) {
                         await NiProcess.exec('rm -rf ${node.path}\n');
                       }
-                      NiToast.showToast('已删除');
+                      showToast('已删除');
                       widget.controller.updateFileNodes();
                       Navigator.of(context).pop();
                     },
