@@ -24,7 +24,7 @@ dependencies:
       url: https://github.com/nightmare-space/custom_log
       ref: dart
   provider: 5.0.0-nullsafety.3
-  flutter_svg: 0.20.0-nullsafety.3
+  flutter_svg: ^0.22.0
 
   dio: ^3.0.10
 
