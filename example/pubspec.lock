@@ -43,15 +43,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.15.0"
-  custom_log:
-    dependency: transitive
-    description:
-      path: "."
-      ref: dart
-      resolved-ref: "1c3356a88ac8d78e9ff61a31564d7f534554c1aa"
-      url: "https://github.com/nightmare-space/custom_log"
-    source: git
-    version: "0.0.1"
   dio:
     dependency: transitive
     description:
@@ -334,7 +325,7 @@ packages:
       name: test_api
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.0"
+    version: "0.2.19"
   typed_data:
     dependency: transitive
     description:

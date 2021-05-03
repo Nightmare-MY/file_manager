@@ -1,24 +1,17 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:custom_log/custom_log.dart';
-import 'package:file_manager/src/config/config.dart';
 import 'package:file_manager/src/config/global.dart';
-import 'package:file_manager/src/dialog/long_press_dialog.dart';
 import 'package:file_manager/src/io/file_io.dart';
 import 'package:file_manager/src/page/file_manager_controller.dart';
 import 'package:file_manager/src/widgets/item_imgheader.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:global_repository/global_repository.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
-import 'package:file_manager/src/io/src/directory.dart';
 import 'package:file_manager/src/io/src/file.dart';
 import 'package:file_manager/src/io/src/file_entity.dart';
 import 'package:file_manager/src/provider/file_manager_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../io/src/directory.dart';
 import '../io/src/file.dart';
-import 'text_edit.dart';
 import 'utils/gesture_handler.dart';
 import 'widget/file_item_suffix.dart';
 

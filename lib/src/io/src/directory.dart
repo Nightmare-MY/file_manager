@@ -1,9 +1,7 @@
 import 'dart:io';
 
-import 'package:custom_log/custom_log.dart';
 import 'package:dio/dio.dart';
 import 'package:file_manager/src/io/file_io.dart';
-import 'package:file_manager/src/utils/http/http.dart';
 import 'package:flutter/foundation.dart';
 import 'package:global_repository/global_repository.dart';
 
