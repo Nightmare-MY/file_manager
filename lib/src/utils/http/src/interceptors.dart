@@ -2,7 +2,10 @@ part of http;
 
 class HeaderInterceptor extends InterceptorsWrapper {
   @override
-  Future<dynamic> onRequest(RequestOptions options) async {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) {
     options.connectTimeout = 1000 * 15;
     options.receiveTimeout = 10000 * 15;
     // options.headers['API-Key'] = Config.apiKey;
@@ -11,21 +14,24 @@ class HeaderInterceptor extends InterceptorsWrapper {
     //   options.headers['Authorization'] =
     //       'Bearer ' + Global.instance.userInfo.token;
     // } else {}
-    return super.onRequest(options);
+    return handler.next(options);
   }
 
   @override
-  Future<dynamic> onResponse(Response<dynamic> response) {
+  void onResponse(
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) {
     DioUtils.cancelToken = null;
-    return super.onResponse(response);
+    return handler.next(response);
   }
 }
 
 class ErrorInterceptor extends InterceptorsWrapper {
   @override
-  Future onError(DioError err) {
+  void onError(DioError err, ErrorInterceptorHandler handler) {
     switch (err.type) {
-      case DioErrorType.RESPONSE:
+      case DioErrorType.response:
         String message = '';
         final String content = err.response.data.toString();
         // Log.d(err.response.data.runtimeType);
@@ -67,7 +73,7 @@ class ErrorInterceptor extends InterceptorsWrapper {
             throw StatusException(status: status, message: message);
         }
         break;
-      case DioErrorType.CANCEL:
+      case DioErrorType.cancel:
         DioUtils.cancelToken = null;
         throw CancelRequestException(
             status: HttpStatus.clientClosedRequest, message: err.toString());

@@ -16,13 +16,11 @@ dependencies:
     git: https://github.com/nightmare-space/global_repository
   # Flutter 的一些动画
   flutter_spinkit: "^4.1.2"
-  shelf_proxy: ^0.1.0+7
   # 可拖拽的ListView
   # svg图像
-  provider: 5.0.0-nullsafety.3
+  provider: ^5.0.0
   flutter_svg: ^0.22.0
-
-  dio: ^3.0.10
+  dio: ^4.0.0
 
 dev_dependencies:
   flutter_test:
