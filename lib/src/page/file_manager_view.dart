@@ -403,6 +403,9 @@ class _FileItemState extends State<FileItem>
                             height: 30,
                             child: _iconData,
                           ),
+                          SizedBox(
+                            width: 4,
+                          ),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
