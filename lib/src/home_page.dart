@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:global_repository/global_repository.dart';
-import 'package:provider/provider.dart';
 import 'colors/file_colors.dart';
-import 'config/config.dart';
 import 'config/global.dart';
 import 'dialog/add_entity_page.dart';
 import 'dialog/window_choose.dart';
@@ -606,7 +604,6 @@ class _FileManagerHomePageState extends State<FileManagerHomePage>
                           position: position,
                         );
                         if (choose == 0) {
-                          print(PlatformUtil.packageName);
                           BookMarks.addMarks(
                             _controllers[_titlePageController.page.toInt()]
                                 .dirPath,

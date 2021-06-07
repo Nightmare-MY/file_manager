@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:file_manager/src/config/global.dart';
 import 'package:file_manager/src/page/file_manager_controller.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:global_repository/global_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:global_repository/global_repository.dart';
+import 'package:path/path.dart' as p;
+
 import '../colors/file_colors.dart';
-import '../file_manager.dart';
 import '../utils/bookmarks.dart';
 import 'setting_page.dart';
 
@@ -522,7 +523,7 @@ class _MarksItemState extends State<MarksItem>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(PlatformUtil.getFileName(widget.marksPath)),
+                      Text(p.basename(widget.marksPath)),
                       SizedBox(
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,

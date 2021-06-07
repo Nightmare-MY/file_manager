@@ -104,7 +104,7 @@ class NiDirectoryLinux extends AbstractDirectory with NiProcessBased {
     path = path.replaceAll('//', '/');
     // print('刷新的路径=====>>${PlatformUtil.getUnixPath(path)}');
     final String lsOut = await NiProcess.exec(
-      '$lsPath -aog "${PlatformUtil.getUnixPath(path)}"\n',
+      '$lsPath -aog "$path"\n',
     );
     if (enableIOVerbose) {
       lsOut.split('\n').forEach((element) {
@@ -267,7 +267,7 @@ class NiDirectoryWeb extends AbstractDirectory with NiProcessBased {
     // print('刷新的路径=====>>${PlatformUtil.getUnixPath(path)}');
 
     final String lsOut = await getResultFromServer(
-      '$lsPath -aog "${PlatformUtil.getUnixPath(path)}"',
+      '$lsPath -aog "$path}"',
     );
     if (verbose) {
       // PrintUtil.printn('--------- lsOut ------------', 31, 47);

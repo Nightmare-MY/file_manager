@@ -80,7 +80,7 @@ class _DownloadFileState extends State<_DownloadFile> {
     // final String _human = getFileSize(_fullByte); //拿到可读的文件大小返回给用户
     print('fullByte======$fullByte');
     final String savePath =
-        filesPath + Platform.pathSeparator + PlatformUtil.getFileName(urlPath);
+        filesPath + Platform.pathSeparator + p.basename(urlPath);
     // updateBusyboxProgress(fullByte, savePath);
     await dio.download(
       urlPath,
