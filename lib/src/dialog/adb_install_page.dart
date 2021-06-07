@@ -4,6 +4,7 @@ import 'package:file_manager/src/config/config.dart';
 import 'package:file_manager/src/page/widget/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:global_repository/global_repository.dart';
+import 'package:path/path.dart' as p;
 
 class AdbInstallPage extends StatefulWidget {
   @override
@@ -114,7 +115,7 @@ class _DownloadFileState extends State<_DownloadFile> {
       needDownloadFile = androidAdbFiles;
     }
     for (final String urlPath in needDownloadFile) {
-      downloadName = PlatformUtil.getFileName(urlPath);
+      downloadName = p.basename(urlPath);
       setState(() {});
       await downloadFile(urlPath);
     }
